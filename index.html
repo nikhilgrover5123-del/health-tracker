@@ -8,6 +8,1093 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1A1A2E">
 <title>Health Tracker</title>
+<style>
+:root {
+  --primary: #1976D2;
+  --primary-dark: #1A1A2E;
+  --green: #27AE60;
+  --amber: #F39C12;
+  --red: #E53935;
+  --red-bg: #FFEBEE;
+  --surface: #FFFFFF;
+  --bg: #F0F2F5;
+  --text: #212121;
+  --text2: #616161;
+  --border: #BDBDBD;
+  --radius: 10px;
+  --nav-h: 68px;
+  --F: 17px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: var(--F); -webkit-text-size-adjust: none; text-size-adjust: none; }
+body { font-family: -apple-system, 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: calc(var(--nav-h) + 16px); }
+input, textarea, select, button { font-size: var(--F) !important; font-family: inherit; touch-action: manipulation; }
+
+/* TOP BAR */
+.topbar { background: var(--primary-dark); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.topbar h1 { font-size: 19px; font-weight: 500; }
+#dateSelect { background: rgba(255,255,255,0.15); border: none; color: #fff; padding: 8px 12px; border-radius: 20px; font-size: 15px !important; }
+
+/* SCORE BAR */
+.scorebar { background: var(--primary-dark); border-top: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+.spill { background: rgba(255,255,255,0.12); border-radius: 20px; padding: 5px 12px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 5px; }
+.spill b { font-size: 17px; }
+
+/* BOTTOM NAV */
+.botnav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: var(--primary-dark); display: flex; z-index: 100; box-shadow: 0 -2px 8px rgba(0,0,0,0.2); padding-bottom: env(safe-area-inset-bottom); }
+.navitem { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); cursor: pointer; gap: 4px; font-size: 12px; transition: color 0.2s; }
+.navitem.on { color: #fff; }
+.navicon { font-size: 24px; }
+
+/* PAGES */
+.page { display: none; padding: 14px; }
+.page.on { display: block; }
+
+/* CARD */
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 14px; overflow: hidden; }
+.cardhead { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; min-height: 58px; user-select: none; }
+.cardtitle { font-size: 16px; font-weight: 600; color: var(--primary-dark); display: flex; align-items: center; gap: 9px; }
+.dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.cardbody { padding: 4px 18px 18px; }
+.cardbody.hide { display: none; }
+.chev { font-size: 18px; color: var(--text2); transition: transform 0.2s; }
+.chev.open { transform: rotate(180deg); }
+
+/* FIELD */
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 14px; font-weight: 500; color: var(--text2); margin-bottom: 7px; }
+.field label .req { color: var(--red); margin-left: 3px; }
+.field input[type=text], .field input[type=number], .field textarea, .field select {
+  width: 100%; padding: 14px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: var(--F) !important; background: #FAFAFA; color: var(--text);
+  outline: none; -webkit-appearance: none; appearance: none; min-height: 52px; transition: border-color 0.2s;
+}
+.field input:focus, .field textarea:focus { border-color: var(--primary); border-width: 2px; background: #fff; }
+.field textarea { resize: vertical; min-height: 72px; }
+.field.missing input, .field.missing textarea, .field.missing select { background: var(--red-bg); border-color: #FFCDD2; }
+.field.missing label .req { animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.disabled-field { background: #F5F5F5; border: 1.5px solid #E0E0E0; border-radius: 8px; padding: 14px; font-size: var(--F); color: var(--text2); min-height: 52px; display: flex; align-items: center; }
+
+/* TIME PICKER */
+.timepicker { border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 14px; background: #FAFAFA; }
+.timepicker.missing { background: var(--red-bg); border-color: #FFCDD2; }
+.tp-ampm { display: flex; gap: 8px; margin-bottom: 10px; }
+.tp-ampm .chip { flex: 1; justify-content: center; font-size: 15px; font-weight: 600; }
+.tp-hours { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+.tp-mins { display: flex; gap: 7px; }
+.tp-mins .chip { flex: 1; justify-content: center; font-size: 15px; }
+.tp-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+.tp-display { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+
+/* CHIPS */
+.chips { display: flex; flex-wrap: wrap; gap: 9px; }
+.chip { padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 22px; font-size: 15px; cursor: pointer; user-select: none; transition: all 0.15s; background: #fff; min-height: 46px; display: flex; align-items: center; }
+.chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.chip.yn { min-width: 60px; justify-content: center; font-weight: 600; }
+.chip.yn.yes.on { background: var(--green); border-color: var(--green); }
+.chip.yn.no.on { background: var(--red); border-color: var(--red); }
+
+/* MOOD */
+.moods { display: flex; gap: 8px; flex-wrap: wrap; }
+.moodwrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.moodbtn { font-size: 32px; padding: 8px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; min-width: 50px; text-align: center; transition: all 0.15s; }
+.moodbtn.on { border-color: var(--primary); background: #E3F2FD; }
+.moodlbl { font-size: 11px; color: var(--text2); }
+
+/* LEVELS */
+.levels { display: flex; gap: 9px; }
+.lvlbtn { flex: 1; padding: 14px 4px; text-align: center; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 19px; font-weight: 700; min-height: 52px; background: #fff; transition: all 0.15s; }
+.lvlbtn.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* BUTTONS */
+.btnprimary { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 15px 20px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; min-height: 54px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
+.btnprimary:active { background: #1565C0; transform: scale(0.98); }
+
+/* ENTRIES */
+.entries { margin-top: 12px; }
+.entry { background: #F5F5F5; border-radius: 8px; padding: 11px 13px; margin-bottom: 7px; display: flex; gap: 9px; align-items: flex-start; }
+.etime { color: var(--primary); font-weight: 600; font-size: 14px; white-space: nowrap; }
+.ecat { background: var(--primary); color: #fff; border-radius: 10px; padding: 2px 9px; font-size: 12px; white-space: nowrap; }
+.edetail { flex: 1; font-size: 14px; color: var(--text); }
+.noentry { color: var(--text2); font-size: 15px; font-style: italic; padding: 6px 0; }
+
+/* WATER BAR */
+.wbar-bg { height: 13px; background: #E0E0E0; border-radius: 7px; overflow: hidden; margin-top: 8px; }
+.wbar-fill { height: 100%; background: var(--primary); border-radius: 7px; transition: width 0.4s; width: 0%; }
+.wbar-lbl { font-size: 13px; color: var(--text2); margin-top: 5px; }
+
+/* SLEEP DISPLAY */
+.sleep-display { font-size: 30px; font-weight: 700; color: var(--primary); padding: 4px 0; }
+
+/* COND */
+.cond { display: none; margin-top: 12px; }
+.cond.show { display: block; }
+
+/* SNACKBAR */
+.snack { position: fixed; bottom: calc(var(--nav-h) + 14px); left: 14px; right: 14px; background: #323232; color: #fff; padding: 13px 16px; border-radius: 8px; font-size: 15px; z-index: 999; transform: translateY(120px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+.snack.show { transform: translateY(0); opacity: 1; }
+
+/* HISTORY */
+.histcard { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 16px 18px; margin-bottom: 11px; cursor: pointer; border-left: 4px solid transparent; }
+.histcard.red { border-left-color: var(--red); background: #FFF8F8; }
+.histdate { font-size: 16px; font-weight: 600; color: var(--primary-dark); }
+.histscore { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.hscore { font-size: 14px; color: var(--text2); }
+.hscore b { color: var(--primary); }
+.loading { text-align: center; padding: 50px 20px; color: var(--text2); font-size: 16px; }
+.divider { height: 1px; background: #EEEEEE; margin: 13px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🏃 Health Tracker</h1>
+  <select id="dateSelect" onchange="onDateChange(this.value)"></select>
+</div>
+<div class="scorebar">
+  <div class="spill">📊 Score <b id="s_score">–</b>/15</div>
+  <div class="spill">⭐ Bonus <b id="s_bonus">–</b>/5</div>
+  <div class="spill">😴 Sleep <b id="s_sleep">–</b>h</div>
+  <div class="spill">⭐ Quality <b id="s_quality">–</b>/10</div>
+</div>
+
+<div class="botnav">
+  <div class="navitem on" id="nav-log" onclick="showPage('log')"><div class="navicon">📝</div>Log</div>
+  <div class="navitem" id="nav-history" onclick="showPage('history')"><div class="navicon">📅</div>History</div>
+</div>
+<div class="snack" id="snack"></div>
+
+<!-- LOG PAGE -->
+<div class="page on" id="page-log">
+
+<!-- SLEEP -->
+<div class="card">
+  <div class="cardhead" onclick="tog('sleep')">
+    <div class="cardtitle"><span class="dot" style="background:#3498DB"></span>Sleep</div>
+    <div class="chev open" id="chev-sleep">▾</div>
+  </div>
+  <div class="cardbody" id="body-sleep">
+    <div class="g2">
+      <div class="field" id="fw_wake">
+        <label>Wake up time <span class="req">*</span></label>
+        <div class="timepicker" id="tp_wake"></div>
+      </div>
+      <div class="field">
+        <label>Slept last night</label>
+        <div class="disabled-field" id="slept_last_display">–</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Hours of sleep</label>
+      <div class="sleep-display" id="sleep_hrs_display">–</div>
+    </div>
+  </div>
+</div>
+
+<!-- MORNING ROUTINE -->
+<div class="card">
+  <div class="cardhead" onclick="tog('morning')">
+    <div class="cardtitle"><span class="dot" style="background:#2ECC71"></span>Morning Routine</div>
+    <div class="chev open" id="chev-morning">▾</div>
+  </div>
+  <div class="cardbody" id="body-morning">
+    <div class="field">
+      <label>Done today</label>
+      <div class="chips" id="grp_morning">
+        <div class="chip" onclick="togChip(this,'grp_morning','Morning routine done')">💧 Lukewarm water</div>
+        <div class="chip" onclick="togChip(this,'grp_morning','Morning routine done')">🌿 CCF tea</div>
+        <div class="chip" onclick="togChip(this,'grp_morning','Morning routine done')">🥜 Almonds+Walnuts</div>
+        <div class="chip" onclick="togChip(this,'grp_morning','Morning routine done')">🚶 7min walk</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WATER -->
+<div class="card">
+  <div class="cardhead" onclick="tog('water')">
+    <div class="cardtitle"><span class="dot" style="background:#3498DB"></span>Water</div>
+    <div class="chev open" id="chev-water">▾</div>
+  </div>
+  <div class="cardbody" id="body-water">
+    <div class="field" id="fw_water">
+      <label>Total today (litres) <span class="req">*</span> — target 2.5L</label>
+      <input type="number" id="f_water" step="0.25" min="0" max="10" onchange="autoSave('Water total (litres)',this.value);updateWbar(this.value)">
+    </div>
+    <div class="wbar-bg"><div class="wbar-fill" id="wbar"></div></div>
+    <div class="wbar-lbl" id="wbar_lbl">0 / 2.5L</div>
+  </div>
+</div>
+
+<!-- TREADMILL -->
+<div class="card">
+  <div class="cardhead" onclick="tog('treadmill')">
+    <div class="cardtitle"><span class="dot" style="background:#F39C12"></span>Treadmill</div>
+    <div class="chev open" id="chev-treadmill">▾</div>
+  </div>
+  <div class="cardbody" id="body-treadmill">
+    <div class="g2">
+      <div class="field" id="fw_tkms">
+        <label>Distance (kms) <span class="req">*</span></label>
+        <input type="number" id="f_t_kms" step="0.1" min="0" onchange="autoSave('Treadmill kms',this.value)">
+      </div>
+      <div class="field">
+        <label>Time of day</label>
+        <div class="timepicker" id="tp_treadmill"></div>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="field"><label>Duration (mins)</label><input type="number" id="f_t_dur" min="0" onchange="autoSave('Treadmill duration (mins)',this.value)"></div>
+      <div class="field"><label>Incline</label><input type="number" id="f_t_inc" step="0.5" min="0" onchange="autoSave('Treadmill incline',this.value)"></div>
+      <div class="field"><label>Max speed</label><input type="number" id="f_t_spd" step="0.1" min="0" onchange="autoSave('Treadmill max speed',this.value)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MEALS -->
+<div class="card">
+  <div class="cardhead" onclick="tog('meals')">
+    <div class="cardtitle"><span class="dot" style="background:#E74C3C"></span>Meals</div>
+    <div class="chev open" id="chev-meals">▾</div>
+  </div>
+  <div class="cardbody" id="body-meals">
+    <div class="field">
+      <div class="chips" id="grp_meal_type">
+        <div class="chip on" onclick="selMealType(this,'Breakfast')">🍳 Breakfast</div>
+        <div class="chip" onclick="selMealType(this,'Lunch')">🥗 Lunch</div>
+        <div class="chip" onclick="selMealType(this,'Dinner')">🍽️ Dinner</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field" id="fw_meal_time">
+        <label>Time <span class="req">*</span></label>
+        <div class="timepicker" id="tp_meal"></div>
+      </div>
+      <div class="field" style="display:flex;align-items:flex-end">
+        <div class="chip" id="cb_ate_slowly" onclick="this.classList.toggle('on')" style="width:100%;justify-content:center">🐢 Ate slowly</div>
+      </div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="f_meal_desc" rows="2"></textarea></div>
+    <div class="cond show" id="cond_bfast">
+      <div class="field"><label>Contents (protein check)</label>
+        <div class="chips" id="grp_bfast">
+          <div class="chip" onclick="togChip(this,'grp_bfast',null)">🥚 Eggs</div>
+          <div class="chip" onclick="togChip(this,'grp_bfast',null)">🧀 Paneer</div>
+          <div class="chip" onclick="togChip(this,'grp_bfast',null)">🫓 Chilla</div>
+          <div class="chip" onclick="togChip(this,'grp_bfast',null)">🌾 Oats</div>
+          <div class="chip" onclick="togChip(this,'grp_bfast',null)">Other</div>
+        </div>
+      </div>
+    </div>
+    <div class="cond" id="cond_lunch">
+      <div class="chips">
+        <div class="chip" id="cb_plg" onclick="this.classList.toggle('on')">🫚 Pre-lunch ginger</div>
+        <div class="chip" id="cb_cuke" onclick="this.classList.toggle('on')">🥒 Cucumber salad</div>
+        <div class="chip" id="cb_plw" onclick="this.classList.toggle('on')">🚶 Post-lunch walk</div>
+      </div>
+    </div>
+    <div class="cond" id="cond_dinner">
+      <div class="chips">
+        <div class="chip" id="cb_pdg" onclick="this.classList.toggle('on')">🫚 Pre-dinner ginger</div>
+        <div class="chip" id="cb_pdw" onclick="this.classList.toggle('on')">🚶 Post-dinner walk</div>
+      </div>
+    </div>
+    <button class="btnprimary" onclick="saveMeal()">💾 Save meal</button>
+    <div class="entries" id="meal_entries"><div class="noentry">No meals saved yet</div></div>
+  </div>
+</div>
+
+<!-- FOOD & DRINK LOG -->
+<div class="card">
+  <div class="cardhead" onclick="tog('fd')">
+    <div class="cardtitle"><span class="dot" style="background:#9B59B6"></span>Food & Drink Log</div>
+    <div class="chev open" id="chev-fd">▾</div>
+  </div>
+  <div class="cardbody" id="body-fd">
+    <div class="field">
+      <div class="chips" id="grp_fd_cat">
+        <div class="chip on" onclick="selFdCat(this,'Mid morning snack')">Mid morning</div>
+        <div class="chip" onclick="selFdCat(this,'Post lunch snack')">Post lunch</div>
+        <div class="chip" onclick="selFdCat(this,'Evening snack')">Evening</div>
+        <div class="chip" onclick="selFdCat(this,'After dinner snack')">After dinner</div>
+        <div class="chip" onclick="selFdCat(this,'Coffee')">☕ Coffee</div>
+        <div class="chip" onclick="selFdCat(this,'Junk/Sugar')">🍭 Junk/Sugar</div>
+        <div class="chip" onclick="selFdCat(this,'Alcohol')">🍺 Alcohol</div>
+        <div class="chip" onclick="selFdCat(this,'Thumbs Up')">👍 Thumbs Up</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Time</label><div class="timepicker" id="tp_fd"></div></div>
+      <div class="field"><label>Detail</label><input type="text" id="f_fd_detail"></div>
+    </div>
+    <div class="cond" id="cond_coffee">
+      <div class="g2">
+        <div class="field"><label>Count</label><input type="number" id="f_coffee_n" min="1" max="10"></div>
+        <div class="field"><label>Type</label>
+          <div class="chips" id="grp_coffee_type">
+            <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Black</div>
+            <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Milk</div>
+            <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Sugar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btnprimary" onclick="saveFD()">💾 Save entry</button>
+    <div class="entries" id="fd_entries"><div class="noentry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- HEALTH & MOOD LOG -->
+<div class="card">
+  <div class="cardhead" onclick="tog('hm')">
+    <div class="cardtitle"><span class="dot" style="background:#2ECC71"></span>Health & Mood Log</div>
+    <div class="chev open" id="chev-hm">▾</div>
+  </div>
+  <div class="cardbody" id="body-hm">
+    <div class="field">
+      <div class="chips" id="grp_hm_cat">
+        <div class="chip on" onclick="selHmCat(this,'Mood')">😊 Mood</div>
+        <div class="chip" onclick="selHmCat(this,'Stress')">😤 Stress</div>
+        <div class="chip" onclick="selHmCat(this,'Energy')">⚡ Energy</div>
+        <div class="chip" onclick="selHmCat(this,'Exercise')">🏋️ Exercise</div>
+        <div class="chip" onclick="selHmCat(this,'Headache')">🤕 Headache</div>
+        <div class="chip" onclick="selHmCat(this,'Note')">📝 Note</div>
+      </div>
+    </div>
+    <div class="field"><label>Time</label><div class="timepicker" id="tp_hm"></div></div>
+    <div class="cond show" id="cond_mood">
+      <div class="field"><label>How are you feeling?</label>
+        <div class="moods">
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Happy')">😊</div><div class="moodlbl">Happy</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Good')">🙂</div><div class="moodlbl">Good</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Relaxed')">😌</div><div class="moodlbl">Relaxed</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Motivated')">💪</div><div class="moodlbl">Motivated</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Neutral')">😐</div><div class="moodlbl">Neutral</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Tired')">😴</div><div class="moodlbl">Tired</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Low')">😔</div><div class="moodlbl">Low</div></div>
+          <div class="moodwrap"><div class="moodbtn" onclick="selMood(this,'Angry')">😤</div><div class="moodlbl">Angry</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cond" id="cond_level">
+      <div class="field"><label id="lvl_lbl">Level (1=Low 5=High)</label>
+        <div class="levels">
+          <div class="lvlbtn" onclick="selLvl(this,1)">1</div>
+          <div class="lvlbtn" onclick="selLvl(this,2)">2</div>
+          <div class="lvlbtn" onclick="selLvl(this,3)">3</div>
+          <div class="lvlbtn" onclick="selLvl(this,4)">4</div>
+          <div class="lvlbtn" onclick="selLvl(this,5)">5</div>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label>Note (optional)</label><input type="text" id="f_hm_note"></div>
+    <button class="btnprimary" onclick="saveHM()">💾 Save entry</button>
+    <div class="entries" id="hm_entries"><div class="noentry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- MUSIC -->
+<div class="card">
+  <div class="cardhead" onclick="tog('music')">
+    <div class="cardtitle"><span class="dot" style="background:#F39C12"></span>Music</div>
+    <div class="chev open" id="chev-music">▾</div>
+  </div>
+  <div class="cardbody" id="body-music">
+    <div class="field"><label>Time</label><div class="timepicker" id="tp_music"></div></div>
+    <div class="g2">
+      <div class="field"><label>Mood before</label>
+        <div class="chips" id="grp_mb">
+          <div class="chip" onclick="selChip(this,'grp_mb')">😔 Low</div>
+          <div class="chip" onclick="selChip(this,'grp_mb')">😐 Neutral</div>
+          <div class="chip" onclick="selChip(this,'grp_mb')">🙂 Good</div>
+          <div class="chip" onclick="selChip(this,'grp_mb')">😊 Happy</div>
+        </div>
+      </div>
+      <div class="field"><label>Mood after</label>
+        <div class="chips" id="grp_ma">
+          <div class="chip" onclick="selChip(this,'grp_ma')">😔 Low</div>
+          <div class="chip" onclick="selChip(this,'grp_ma')">😐 Neutral</div>
+          <div class="chip" onclick="selChip(this,'grp_ma')">🙂 Good</div>
+          <div class="chip" onclick="selChip(this,'grp_ma')">😊 Happy</div>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label>What</label><input type="text" id="f_music_what"></div>
+    <button class="btnprimary" onclick="saveMusic()">💾 Save entry</button>
+    <div class="entries" id="music_entries"><div class="noentry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- PERSONAL CARE -->
+<div class="card">
+  <div class="cardhead" onclick="tog('care')">
+    <div class="cardtitle"><span class="dot" style="background:#E74C3C"></span>Personal Care</div>
+    <div class="chev open" id="chev-care">▾</div>
+  </div>
+  <div class="cardbody" id="body-care">
+    <div class="chips">
+      <div class="chip" id="cb_shaved" onclick="togYN('cb_shaved','Shaved')">🪒 Shaved</div>
+      <div class="chip" id="cb_dressed" onclick="togYN('cb_dressed','Dress up well')">👔 Dressed well</div>
+      <div class="chip" id="cb_sunlight" onclick="togYN('cb_sunlight','Sunlight')">☀️ Sunlight</div>
+      <div class="chip" id="cb_housekeeping" onclick="togYN('cb_housekeeping','Housekeeping')">🧹 Housekeeping</div>
+      <div class="chip" id="cb_gratitude" onclick="togYN('cb_gratitude','Gratitude')">🙏 Gratitude</div>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTIONS -->
+<div class="card">
+  <div class="cardhead" onclick="tog('reflect')">
+    <div class="cardtitle"><span class="dot" style="background:#3498DB"></span>Reflections</div>
+    <div class="chev open" id="chev-reflect">▾</div>
+  </div>
+  <div class="cardbody" id="body-reflect">
+    <div class="field">
+      <div class="chips" id="grp_reflect">
+        <div class="chip on" onclick="selChip(this,'grp_reflect')">✨ Story moment</div>
+        <div class="chip" onclick="selChip(this,'grp_reflect')">😄 Brought joy</div>
+        <div class="chip" onclick="selChip(this,'grp_reflect')">🎉 Fun moment</div>
+        <div class="chip" onclick="selChip(this,'grp_reflect')">💬 Compliment</div>
+        <div class="chip" onclick="selChip(this,'grp_reflect')">🚫 Said no</div>
+        <div class="chip" onclick="selChip(this,'grp_reflect')">🙏 Prayer</div>
+      </div>
+    </div>
+    <div class="field"><label>Detail</label><textarea id="f_reflect_detail" rows="2"></textarea></div>
+    <button class="btnprimary" onclick="saveReflect()">💾 Save</button>
+    <div class="entries" id="reflect_entries"><div class="noentry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- PRIVATE TRACKER -->
+<div class="card">
+  <div class="cardhead" onclick="tog('private')">
+    <div class="cardtitle"><span class="dot" style="background:#95A5A6"></span>Private Tracker</div>
+    <div class="chev open" id="chev-private">▾</div>
+  </div>
+  <div class="cardbody" id="body-private">
+    <div class="field">
+      <div class="chips" id="grp_priv">
+        <div class="chip on" onclick="selChip(this,'grp_priv')">M</div>
+        <div class="chip" onclick="selChip(this,'grp_priv')">T</div>
+        <div class="chip" onclick="selChip(this,'grp_priv')">Y</div>
+        <div class="chip" onclick="selChip(this,'grp_priv')">R</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Time</label><div class="timepicker" id="tp_priv"></div></div>
+      <div class="field"><label>Value</label><input type="number" id="f_priv_val" step="0.5"></div>
+    </div>
+    <button class="btnprimary" onclick="savePrivate()">💾 Save</button>
+    <div class="entries" id="private_entries"><div class="noentry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- WEEKLY METRICS -->
+<div class="card" id="weekly_card">
+  <div class="cardhead" onclick="tog('weekly')">
+    <div class="cardtitle"><span class="dot" style="background:#2ECC71"></span>Weekly Metrics</div>
+    <div class="chev open" id="chev-weekly">▾</div>
+  </div>
+  <div class="cardbody" id="body-weekly">
+    <div id="weekly_note" style="font-size:14px;color:var(--text2);margin-bottom:12px;font-style:italic"></div>
+    <div class="g2">
+      <div class="field"><label>Weight (kg)</label><input type="number" id="f_weight" step="0.1" onchange="autoSave('Weight (kg)',this.value)"></div>
+      <div class="field"><label>Waistline (cm)</label><input type="number" id="f_waist" step="0.5" onchange="autoSave('Waistline (cm)',this.value)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NIGHT ROUTINE (LAST) -->
+<div class="card">
+  <div class="cardhead" onclick="tog('night')">
+    <div class="cardtitle"><span class="dot" style="background:#9B59B6"></span>Night Routine</div>
+    <div class="chev open" id="chev-night">▾</div>
+  </div>
+  <div class="cardbody" id="body-night">
+    <div class="chips" id="grp_night" style="margin-bottom:16px">
+      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">🍵 Chamomile tea</div>
+      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">🥜 Pista</div>
+      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">🪥 Brush at night</div>
+      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">💡 Lights dimmed</div>
+      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">🧴 Face wash</div>
+    </div>
+    <div class="divider"></div>
+    <div class="field">
+      <label>Food after 7pm?</label>
+      <div class="chips">
+        <div class="chip yn yes" id="cb_food7_y" onclick="selYN('food7','Yes')">Y</div>
+        <div class="chip yn no" id="cb_food7_n" onclick="selYN('food7','No')">N</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="field" id="fw_slept">
+      <label>Slept at <span class="req">*</span></label>
+      <div class="timepicker" id="tp_slept"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end log page -->
+
+<!-- HISTORY PAGE -->
+<div class="page" id="page-history">
+  <div id="history_content" class="loading">Loading...</div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzrCrxU77PU2fGgVyGmvKo1INP3xDir-fgoA1YANdIEg7n5Xq9d5ndYHeREYvBxdeA6gA/exec';
+const START_DATE = '2026-06-01';
+const MANDATORY_FIELDS = ['fw_wake','fw_water','fw_tkms','fw_slept'];
+
+let curDate = todayStr();
+let mealType = 'Breakfast';
+let fdCat = 'Mid morning snack';
+let hmCat = 'Mood';
+let selMoodVal = '';
+let selLvlVal = 0;
+
+// ── TIME PICKER ───────────────────────────────────────────────
+function buildTP(containerId, defaultTime, onChangeCb) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const [defH, defM] = defaultTime.split(':').map(Number);
+  const isAM = defH < 12;
+  const h12 = defH % 12 || 12;
+
+  let curH = h12, curM = defM, curAM = isAM;
+
+  function val() {
+    const h24 = curAM ? (curH % 12) : (curH % 12) + 12;
+    return (h24 < 10 ? '0' : '') + h24 + ':' + (curM < 10 ? '0' : '') + curM;
+  }
+
+  function render() {
+    const displayH = curH;
+    const displayM = curM < 10 ? '0' + curM : curM;
+    const ampm = curAM ? 'AM' : 'PM';
+    el.innerHTML =
+      '<div class="tp-display">' + displayH + ':' + displayM + ' ' + ampm + '</div>' +
+      '<div class="tp-label">AM / PM</div>' +
+      '<div class="tp-ampm">' +
+        '<div class="chip' + (curAM?' on':'') + '" onclick="tpAMPM_' + containerId + '(true)">AM</div>' +
+        '<div class="chip' + (!curAM?' on':'') + '" onclick="tpAMPM_' + containerId + '(false)">PM</div>' +
+      '</div>' +
+      '<div class="tp-label">Hour</div>' +
+      '<div class="tp-hours">' +
+        [1,2,3,4,5,6,7,8,9,10,11,12].map(h =>
+          '<div class="chip' + (h===curH?' on':'') + '" onclick="tpH_' + containerId + '(' + h + ')">' + h + '</div>'
+        ).join('') +
+      '</div>' +
+      '<div class="tp-label">Minute</div>' +
+      '<div class="tp-mins">' +
+        [0,10,20,30,40,50].map(m =>
+          '<div class="chip' + (m===curM?' on':'') + '" onclick="tpM_' + containerId + '(' + m + ')">' + (m<10?'0'+m:m) + '</div>'
+        ).join('') +
+      '</div>';
+    window['tpVal_' + containerId] = val();
+    if (onChangeCb) onChangeCb(val());
+  }
+
+  window['tpAMPM_' + containerId] = (am) => { curAM = am; render(); };
+  window['tpH_' + containerId]    = (h)  => { curH = h;   render(); };
+  window['tpM_' + containerId]    = (m)  => { curM = m;   render(); };
+  window['tpVal_' + containerId]  = val();
+  window['tpSet_' + containerId]  = (timeStr) => {
+    if (!timeStr) return;
+    const [h, m] = timeStr.split(':').map(Number);
+    curAM = h < 12;
+    curH = h % 12 || 12;
+    curM = m;
+    render();
+  };
+
+  render();
+}
+
+function tpVal(id) { return window['tpVal_' + id] || ''; }
+function tpSet(id, val) { if (window['tpSet_' + id]) window['tpSet_' + id](val); }
+
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  buildDateSelector();
+  initTimePickers();
+  if (new Date().getDay() !== 0) {
+    document.getElementById('weekly_note').textContent = 'Log weight & waistline on Sundays';
+    document.getElementById('weekly_card').style.opacity = '0.5';
+  }
+  loadDay(curDate);
+  checkMandatory();
+});
+
+function initTimePickers() {
+  buildTP('tp_wake', '06:00', v => { autoSave('Wake up time', v); calcSleep(); });
+  buildTP('tp_slept', '23:30', v => { autoSave('Slept at', v); });
+  buildTP('tp_treadmill', nowTime(), v => autoSave('Treadmill time', v));
+  buildTP('tp_meal', '08:30', null);
+  buildTP('tp_fd', '11:00', null);
+  buildTP('tp_hm', nowTime(), null);
+  buildTP('tp_music', nowTime(), null);
+  buildTP('tp_priv', nowTime(), null);
+}
+
+function buildDateSelector() {
+  const sel = document.getElementById('dateSelect');
+  const start = new Date(START_DATE + 'T12:00:00');
+  const today = new Date();
+  for (let i = 0; i <= Math.ceil((today - start) / 86400000); i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const str = d.toISOString().split('T')[0];
+    if (str < START_DATE) break;
+    const lbl = i === 0 ? 'Today' : i === 1 ? 'Yesterday' :
+      d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+    const opt = document.createElement('option');
+    opt.value = str; opt.textContent = lbl;
+    if (str === curDate) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function todayStr() {
+  const now = new Date();
+  const ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+  return ist.toISOString().split('T')[0];
+}
+
+function nowTime() {
+  const now = new Date();
+  const ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+  return ist.toISOString().split('T')[1].slice(0,5);
+}
+
+function onDateChange(val) {
+  curDate = val;
+  loadDay(val);
+}
+
+// ── API ───────────────────────────────────────────────────────
+function apicall(params, cb) {
+  const url = API + '?' + new URLSearchParams(params).toString();
+  fetch(url, { redirect: 'follow' })
+    .then(r => r.json())
+    .then(cb)
+    .catch(() => snack('⚠️ Connection error'));
+}
+
+function autoSave(field, value) {
+  if (value === null || value === undefined || value === '') return;
+  apicall({ action:'saveField', date:curDate, field, value }, res => {
+    if (res.success) snack('✓ Saved');
+    else snack('Error: ' + res.error);
+  });
+}
+
+function appendEvt(time, category, detail, numVal, moodScore, cb) {
+  apicall({ action:'appendEvent', date:curDate, time, category, detail:detail||'', numVal:numVal||'', moodScore:moodScore||'' }, res => {
+    if (res.success) { snack('✓ ' + category + ' saved'); loadDay(curDate); if(cb) cb(); }
+    else snack('Error: ' + res.error);
+  });
+}
+
+// ── LOAD DAY ──────────────────────────────────────────────────
+function loadDay(dateStr) {
+  apicall({ action:'getRow', date:dateStr }, res => {
+    if (res.success) populateFields(JSON.parse(res.data));
+  });
+  apicall({ action:'getEvents', date:dateStr }, res => {
+    if (res.success) populateEvents(JSON.parse(res.data));
+  });
+  // Load yesterday's slept at for sleep hours calc
+  const yd = new Date(dateStr + 'T12:00:00');
+  yd.setDate(yd.getDate() - 1);
+  const ydStr = yd.toISOString().split('T')[0];
+  apicall({ action:'getRow', date:ydStr }, res => {
+    if (res.success) {
+      const d = JSON.parse(res.data);
+      const sleptAt = d['Slept at'] || '';
+      document.getElementById('slept_last_display').textContent = sleptAt || '–';
+      window._yesterdaySlept = sleptAt;
+      calcSleep();
+    }
+  });
+}
+
+function populateFields(d) {
+  if (d['Wake up time']) tpSet('tp_wake', d['Wake up time']);
+  if (d['Slept at'])     tpSet('tp_slept', d['Slept at']);
+  if (d['Treadmill time']) tpSet('tp_treadmill', d['Treadmill time']);
+  setF('f_t_kms', d['Treadmill kms']);
+  setF('f_t_dur', d['Treadmill duration (mins)']);
+  setF('f_t_inc', d['Treadmill incline']);
+  setF('f_t_spd', d['Treadmill max speed']);
+  setF('f_water', d['Water total (litres)']);
+  setF('f_weight', d['Weight (kg)']);
+  setF('f_waist', d['Waistline (cm)']);
+  if (d['Water total (litres)']) updateWbar(d['Water total (litres)']);
+  if (d['Hours of sleep']) updateSleepDisplay(d['Hours of sleep']);
+  restoreChips('grp_morning', d['Morning routine done']);
+  restoreChips('grp_night', d['Night routine done']);
+  if (d['Shaved'] === 'Yes') document.getElementById('cb_shaved').classList.add('on');
+  if (d['Dress up well'] === 'Yes') document.getElementById('cb_dressed').classList.add('on');
+  if (d['Sunlight'] === 'Yes') document.getElementById('cb_sunlight').classList.add('on');
+  if (d['Housekeeping'] === 'Yes') document.getElementById('cb_housekeeping').classList.add('on');
+  if (d['Gratitude'] === 'Yes') document.getElementById('cb_gratitude').classList.add('on');
+  const fa7 = d['Food after 7pm'];
+  if (fa7 === 'Yes') selYN('food7','Yes');
+  else if (fa7 === 'No') selYN('food7','No');
+  checkMandatory();
+}
+
+function populateEvents(events) {
+  const bycat = (cats) => events.filter(e => cats.includes(e.Category));
+  renderEntries('meal_entries', bycat(['Breakfast','Lunch','Dinner']));
+  renderEntries('fd_entries', bycat(['Mid morning snack','Post lunch snack','Evening snack','After dinner snack','Coffee','Junk/Sugar','Alcohol','Thumbs Up']));
+  renderEntries('hm_entries', bycat(['Mood','Stress','Energy','Exercise','Headache','Note']));
+  renderEntries('music_entries', bycat(['Music']));
+  renderEntries('reflect_entries', bycat(['Reflection']));
+  renderEntries('private_entries', events.filter(e => e.Category && e.Category.startsWith('Private-')));
+  calcScore(events);
+}
+
+function renderEntries(id, entries) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!entries.length) { el.innerHTML = '<div class="noentry">No entries yet</div>'; return; }
+  el.innerHTML = entries.map(e => {
+    const t = String(e.Time||'').slice(0,5);
+    return '<div class="entry"><span class="etime">' + t + '</span><span class="ecat">' + e.Category + '</span><span class="edetail">' + (e.Detail||'') + (e['Numeric value']?' · '+e['Numeric value']:'') + '</span></div>';
+  }).join('');
+}
+
+// ── SCORING ───────────────────────────────────────────────────
+function calcScore(events) {
+  // Scoring done server-side in dashboard; here just show from events
+  const moodEvents = events.filter(e => e.Category === 'Mood');
+  const hasMood2pm = moodEvents.some(e => {
+    const t = String(e.Time||'').slice(0,5);
+    return t >= '13:00' && t <= '15:00' && ['Happy','Good','Motivated','Relaxed'].includes((e.Detail||'').split(' ')[0]);
+  });
+  const hasHeadache = events.some(e => e.Category === 'Headache');
+  const hasEvExercise = events.some(e => e.Category === 'Exercise');
+
+  // Get field values for scoring
+  const wake = tpVal('tp_wake');
+  const slept = tpVal('tp_slept');
+  const water = parseFloat(document.getElementById('f_water').value||0);
+  const tkms  = parseFloat(document.getElementById('f_t_kms').value||0);
+
+  let score = 0;
+  if (wake && wake <= '06:00') score++;
+  if (slept && (slept >= '23:30' ? false : true)) score++; // before 11:30
+  if (water >= 2.5) score++;
+  if (tkms >= 2) score++;
+  if (hasMood2pm) score++;
+  if (!hasHeadache) score++;
+  if (hasEvExercise) score++;
+
+  document.getElementById('s_score').textContent = score;
+  document.getElementById('s_sleep').textContent = document.getElementById('sleep_hrs_display').textContent.replace('h','') || '–';
+}
+
+// ── SLEEP CALC ────────────────────────────────────────────────
+function calcSleep() {
+  const wake = tpVal('tp_wake');
+  const slept = window._yesterdaySlept || '';
+  if (!wake || !slept) return;
+  const wm = toMin(wake);
+  let sm = toMin(slept);
+  let diff = wm - sm;
+  if (diff < 0) diff += 1440;
+  const h = diff / 60;
+  updateSleepDisplay(h);
+  autoSave('Hours of sleep', h.toFixed(2));
+}
+
+function toMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+
+function updateSleepDisplay(val) {
+  const h = parseFloat(val);
+  if (isNaN(h)) return;
+  const el = document.getElementById('sleep_hrs_display');
+  el.textContent = h.toFixed(1) + 'h';
+  el.style.color = h >= 7 ? 'var(--green)' : h >= 6 ? 'var(--primary)' : 'var(--amber)';
+  document.getElementById('s_sleep').textContent = h.toFixed(1);
+}
+
+function updateWbar(val) {
+  const v = parseFloat(val)||0;
+  const pct = Math.min(v/2.5*100, 100);
+  document.getElementById('wbar').style.width = pct + '%';
+  document.getElementById('wbar').style.background = pct>=100 ? 'var(--green)' : pct>=60 ? 'var(--primary)' : 'var(--amber)';
+  document.getElementById('wbar_lbl').textContent = v + 'L / 2.5L';
+}
+
+// ── MANDATORY CHECK ───────────────────────────────────────────
+function checkMandatory() {
+  const today = todayStr();
+  const tmr = new Date(today); tmr.setDate(tmr.getDate()+1);
+  const tmrStr = tmr.toISOString().split('T')[0];
+  const isRelevant = curDate === today || curDate === tmrStr;
+  if (!isRelevant) {
+    MANDATORY_FIELDS.forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('missing'); });
+    return;
+  }
+  const checks = {
+    fw_wake:  () => tpVal('tp_wake') !== '',
+    fw_water: () => !!document.getElementById('f_water').value,
+    fw_tkms:  () => !!document.getElementById('f_t_kms').value,
+    fw_slept: () => tpVal('tp_slept') !== '',
+  };
+  Object.entries(checks).forEach(([id, check]) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('missing', !check());
+  });
+}
+
+// ── SAVE FUNCTIONS ────────────────────────────────────────────
+function saveMeal() {
+  const time = tpVal('tp_meal');
+  const desc = document.getElementById('f_meal_desc').value;
+  if (!time && !desc) { snack('Please enter time or description'); return; }
+  const ateS = document.getElementById('cb_ate_slowly').classList.contains('on');
+  const contents = getChecked('grp_bfast');
+  let detail = desc;
+  if (contents.length) detail += ' | ' + contents.join(', ');
+  if (ateS) detail += ' | Ate slowly';
+
+  const saves = {};
+  if (mealType === 'Breakfast') {
+    saves['Breakfast time'] = time;
+    saves['Breakfast description'] = desc;
+    saves['Breakfast contents'] = contents.join(', ');
+    saves['Breakfast ate slowly'] = ateS ? 'Yes' : 'No';
+  } else if (mealType === 'Lunch') {
+    saves['Lunch time'] = time;
+    saves['Lunch description'] = desc;
+    saves['Lunch pre ginger'] = document.getElementById('cb_plg').classList.contains('on') ? 'Yes' : 'No';
+    saves['Lunch cucumber salad'] = document.getElementById('cb_cuke').classList.contains('on') ? 'Yes' : 'No';
+    saves['Lunch post walk'] = document.getElementById('cb_plw').classList.contains('on') ? 'Yes' : 'No';
+    saves['Lunch ate slowly'] = ateS ? 'Yes' : 'No';
+  } else if (mealType === 'Dinner') {
+    saves['Dinner time'] = time;
+    saves['Dinner description'] = desc;
+    saves['Dinner pre ginger'] = document.getElementById('cb_pdg').classList.contains('on') ? 'Yes' : 'No';
+    saves['Dinner post walk'] = document.getElementById('cb_pdw').classList.contains('on') ? 'Yes' : 'No';
+    saves['Dinner ate slowly'] = ateS ? 'Yes' : 'No';
+  }
+  Object.entries(saves).forEach(([f,v]) => apicall({ action:'saveField', date:curDate, field:f, value:v }, ()=>{}));
+  appendEvt(time, mealType, detail, '', '', () => {
+    document.getElementById('f_meal_desc').value = '';
+  });
+}
+
+function saveFD() {
+  const time = tpVal('tp_fd');
+  let detail = document.getElementById('f_fd_detail').value;
+  if (fdCat === 'Coffee') {
+    const n = document.getElementById('f_coffee_n').value || '1';
+    const types = getChecked('grp_coffee_type');
+    detail = n + ' coffee' + (types.length ? '('+types.join('+')+')' : '') + (detail?' · '+detail:'');
+  }
+  appendEvt(time, fdCat, detail, '', '', () => {
+    document.getElementById('f_fd_detail').value = '';
+  });
+}
+
+function saveHM() {
+  const time = tpVal('tp_hm');
+  const note = document.getElementById('f_hm_note').value;
+  let detail = note, moodScore = '';
+  if (hmCat === 'Mood' && selMoodVal) { detail = selMoodVal + (note?' · '+note:''); moodScore = moodScoreVal(selMoodVal); }
+  if ((hmCat==='Stress'||hmCat==='Energy') && selLvlVal) detail = 'Level '+selLvlVal+(note?' · '+note:'');
+  appendEvt(time, hmCat, detail, selLvlVal||'', moodScore, () => {
+    document.getElementById('f_hm_note').value = '';
+    selMoodVal = ''; selLvlVal = 0;
+    document.querySelectorAll('.moodbtn').forEach(m=>m.classList.remove('on'));
+    document.querySelectorAll('.lvlbtn').forEach(l=>l.classList.remove('on'));
+  });
+}
+
+function saveMusic() {
+  const time = tpVal('tp_music');
+  const what = document.getElementById('f_music_what').value;
+  const before = getSel('grp_mb'), after = getSel('grp_ma');
+  const detail = (before?'Before: '+before:'') + (after?' → After: '+after:'') + (what?' · '+what:'');
+  appendEvt(time, 'Music', detail, '', '', () => {
+    document.getElementById('f_music_what').value = '';
+  });
+}
+
+function saveReflect() {
+  const cat = getSel('grp_reflect') || 'Story moment';
+  const detail = document.getElementById('f_reflect_detail').value;
+  if (!detail) { snack('Please enter a detail'); return; }
+  appendEvt(nowTime(), 'Reflection', cat+': '+detail, '', '', () => {
+    document.getElementById('f_reflect_detail').value = '';
+  });
+}
+
+function savePrivate() {
+  const cat = getSel('grp_priv') || 'M';
+  const time = tpVal('tp_priv');
+  const val = document.getElementById('f_priv_val').value;
+  appendEvt(time, 'Private-'+cat, '', val, '', () => {
+    document.getElementById('f_priv_val').value = '';
+  });
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────
+function tog(id) {
+  const b = document.getElementById('body-'+id);
+  const c = document.getElementById('chev-'+id);
+  const open = !b.classList.contains('hide');
+  b.classList.toggle('hide', open);
+  c.classList.toggle('open', !open);
+}
+
+function togChip(el, gid, field) {
+  el.classList.toggle('on');
+  if (field) autoSave(field, getChecked(gid).join(', '));
+}
+
+function selChip(el, gid) {
+  document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function togYN(cbId, field) {
+  const el = document.getElementById(cbId);
+  el.classList.toggle('on');
+  autoSave(field, el.classList.contains('on') ? 'Yes' : 'No');
+}
+
+function selYN(prefix, val) {
+  const y = document.getElementById('cb_'+prefix+'_y');
+  const n = document.getElementById('cb_'+prefix+'_n');
+  if (y) y.classList.toggle('on', val==='Yes');
+  if (n) n.classList.toggle('on', val==='No');
+  autoSave('Food after 7pm', val);
+}
+
+function selMealType(el, type) {
+  mealType = type;
+  document.querySelectorAll('#grp_meal_type .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cond_bfast').classList.toggle('show', type==='Breakfast');
+  document.getElementById('cond_lunch').classList.toggle('show', type==='Lunch');
+  document.getElementById('cond_dinner').classList.toggle('show', type==='Dinner');
+  const defaults = { Breakfast:'08:30', Lunch:'13:30', Dinner:'19:00' };
+  tpSet('tp_meal', defaults[type] || nowTime());
+}
+
+function selFdCat(el, cat) {
+  fdCat = cat;
+  document.querySelectorAll('#grp_fd_cat .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cond_coffee').classList.toggle('show', cat==='Coffee');
+  const defaults = { 'Mid morning snack':'11:00', 'Post lunch snack':'16:00', 'Evening snack':'18:00' };
+  tpSet('tp_fd', defaults[cat] || nowTime());
+}
+
+function selHmCat(el, cat) {
+  hmCat = cat;
+  document.querySelectorAll('#grp_hm_cat .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cond_mood').classList.toggle('show', cat==='Mood');
+  document.getElementById('cond_level').classList.toggle('show', cat==='Stress'||cat==='Energy');
+  if (cat==='Stress') document.getElementById('lvl_lbl').textContent = 'Stress level (1=Low 5=High)';
+  if (cat==='Energy') document.getElementById('lvl_lbl').textContent = 'Energy level (1=Drained 5=High)';
+}
+
+function selMood(el, mood) {
+  document.querySelectorAll('.moodbtn').forEach(m=>m.classList.remove('on'));
+  el.classList.add('on');
+  selMoodVal = mood;
+}
+
+function selLvl(el, lvl) {
+  document.querySelectorAll('.lvlbtn').forEach(l=>l.classList.remove('on'));
+  el.classList.add('on');
+  selLvlVal = lvl;
+}
+
+function moodScoreVal(m) {
+  return {Happy:5,Good:4,Relaxed:4,Motivated:5,Neutral:3,Tired:2,Low:1,Angry:2}[m]||'';
+}
+
+function getChecked(gid) {
+  return Array.from(document.querySelectorAll('#'+gid+' .chip.on')).map(c=>c.textContent.trim());
+}
+
+function getSel(gid) {
+  const el = document.querySelector('#'+gid+' .chip.on');
+  return el ? el.textContent.trim() : '';
+}
+
+function setF(id, val) {
+  const el = document.getElementById(id);
+  if (el && val !== undefined && val !== null && val !== '') el.value = val;
+}
+
+function restoreChips(gid, val) {
+  if (!val) return;
+  const items = val.toString().split(',').map(s=>s.trim());
+  document.querySelectorAll('#'+gid+' .chip').forEach(c => {
+    if (items.some(i => c.textContent.trim().includes(i) || i.includes(c.textContent.trim()))) c.classList.add('on');
+  });
+}
+
+function snack(msg) {
+  const el = document.getElementById('snack');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.navitem').forEach(el=>el.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.getElementById('nav-'+p).classList.add('on');
+  if (p==='history') loadHistory();
+}
+
+function loadHistory() {
+  const el = document.getElementById('history_content');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+  apicall({ action:'getDates' }, res => {
+    if (!res.success) { el.innerHTML = '<div class="loading">Error loading</div>'; return; }
+    const dates = JSON.parse(res.dates).reverse();
+    if (!dates.length) { el.innerHTML = '<div class="loading">No data yet</div>'; return; }
+    const today = todayStr();
+    const tmr = new Date(today); tmr.setDate(tmr.getDate()+1);
+    const tmrStr = tmr.toISOString().split('T')[0];
+    el.innerHTML = dates.map(d => {
+      const lbl = new Date(d+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',year:'numeric'});
+      const isRed = (d===today||d===tmrStr) && d >= '2026-06-14';
+      return '<div class="histcard' + (isRed?' red':'') + '" onclick="onDateChange(\''+d+'\');showPage(\'log\')">' +
+        '<div class="histdate">' + lbl + (isRed?' ⚠️':'') + '</div>' +
+        '<div class="histscore"><span class="hscore">Tap to view or edit</span></div>' +
+        '</div>';
+    }).join('');
+  });
+}
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1A1A2E">
+<title>Health Tracker</title>
 <link rel="manifest" href="manifest.json">
 <style>
   :root {
