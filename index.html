@@ -1,1 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1A1A2E">
+<title>Health Tracker</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root {
+    --primary: #1976D2;
+    --primary-dark: #1A1A2E;
+    --green: #2ECC71;
+    --amber: #F39C12;
+    --surface: #FFFFFF;
+    --bg: #F0F2F5;
+    --text: #212121;
+    --text2: #616161;
+    --border: #BDBDBD;
+    --radius: 8px;
+    --bottom-nav-h: 72px;
+    --input-h: 56px;
+    --font: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { font-size: var(--font); font-family: 'Roboto', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-text-size-adjust: none; text-size-adjust: none; }
+  body { padding-bottom: calc(var(--bottom-nav-h) + 20px); }
+  input, textarea, select, button { font-size: var(--font) !important; font-family: inherit; touch-action: manipulation; }
+
+  /* TOP BAR */
+  .top-bar { background: var(--primary-dark); color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); min-height: 60px; }
+  .top-bar h1 { font-size: 20px; font-weight: 500; }
+  .date-selector { background: rgba(255,255,255,0.15); border: none; color: #fff; padding: 10px 14px; border-radius: 24px; font-size: 16px !important; cursor: pointer; min-height: 44px; }
+
+  /* SCORE BAR */
+  .score-bar { background: var(--primary-dark); color: #fff; padding: 10px 20px; display: flex; gap: 10px; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+  .score-pill { background: rgba(255,255,255,0.15); border-radius: 24px; padding: 6px 14px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+  .score-pill b { font-size: 18px; }
+
+  /* BOTTOM NAV */
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h); background: var(--primary-dark); display: flex; z-index: 100; box-shadow: 0 -2px 8px rgba(0,0,0,0.2); padding-bottom: env(safe-area-inset-bottom); }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); cursor: pointer; gap: 5px; font-size: 13px; transition: color 0.2s; }
+  .nav-item.active { color: #fff; }
+  .nav-icon { font-size: 26px; }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.12); margin-bottom: 16px; overflow: hidden; }
+  .card-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; min-height: 64px; user-select: none; }
+  .card-title { font-size: 17px; font-weight: 600; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+  .section-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .card-body { padding: 4px 20px 20px; }
+  .card-body.hidden { display: none; }
+  .chevron { font-size: 20px; color: var(--text2); transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* FIELDS */
+  .field { margin-bottom: 20px; }
+  .field label { display: block; font-size: 15px; font-weight: 500; color: var(--text2); margin-bottom: 8px; }
+  .field input[type=text],
+  .field input[type=number],
+  .field input[type=time],
+  .field textarea,
+  .field select {
+    width: 100%; padding: 16px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: var(--font) !important; background: #FAFAFA; color: var(--text);
+    outline: none; -webkit-appearance: none; appearance: none;
+    min-height: var(--input-h); line-height: 1.4; transition: border-color 0.2s;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--primary); border-width: 2px; background: #fff; }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .chip { padding: 12px 18px; border: 1.5px solid var(--border); border-radius: 24px; font-size: 16px; cursor: pointer; user-select: none; transition: all 0.15s; background: #fff; min-height: 48px; display: flex; align-items: center; }
+  .chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  /* MOOD */
+  .moods { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mood-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .mood-btn { font-size: 34px; padding: 8px; border-radius: 14px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; min-width: 54px; text-align: center; }
+  .mood-btn.on { border-color: var(--primary); background: #E3F2FD; }
+  .mood-lbl { font-size: 12px; color: var(--text2); }
+
+  /* LEVELS */
+  .levels { display: flex; gap: 10px; }
+  .level-btn { flex: 1; padding: 14px 4px; text-align: center; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 20px; font-weight: 700; transition: all 0.15s; min-height: 54px; background: #fff; }
+  .level-btn.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  /* BUTTONS */
+  .btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 16px 24px; font-size: 17px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; min-height: 56px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
+  .btn-primary:active { background: #1565C0; }
+
+  /* LOG ENTRIES */
+  .entries { margin-top: 14px; }
+  .entry { background: #F5F5F5; border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start; }
+  .entry-time { color: var(--primary); font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .entry-cat { background: var(--primary); color: #fff; border-radius: 12px; padding: 3px 10px; font-size: 13px; white-space: nowrap; }
+  .entry-detail { flex: 1; font-size: 15px; color: var(--text); }
+  .no-entry { color: var(--text2); font-size: 15px; font-style: italic; padding: 6px 0; }
+
+  /* WATER BAR */
+  .water-bar-bg { height: 14px; background: var(--border); border-radius: 7px; overflow: hidden; margin-top: 8px; }
+  .water-bar-fill { height: 100%; background: var(--primary); border-radius: 7px; transition: width 0.4s; }
+  .water-lbl { font-size: 14px; color: var(--text2); margin-top: 6px; }
+
+  /* CONDITIONAL */
+  .cond { display: none; margin-top: 14px; }
+  .cond.show { display: block; }
+
+  /* SNACKBAR */
+  .snackbar { position: fixed; bottom: calc(var(--bottom-nav-h) + 16px); left: 16px; right: 16px; background: #323232; color: #fff; padding: 14px 18px; border-radius: 8px; font-size: 16px; z-index: 999; transform: translateY(120px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  .snackbar.show { transform: translateY(0); opacity: 1; }
+
+  /* HISTORY */
+  .hist-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 18px 20px; margin-bottom: 12px; cursor: pointer; }
+  .hist-date { font-size: 17px; font-weight: 600; color: var(--primary-dark); }
+  .hist-sub { font-size: 15px; color: var(--text2); margin-top: 4px; }
+
+  .loading { text-align: center; padding: 60px 20px; color: var(--text2); font-size: 17px; }
+  .divider { height: 1px; background: #EEEEEE; margin: 14px 0; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <h1>🏃 Health Tracker</h1>
+  <select class="date-selector" id="dateSelect" onchange="onDateChange(this.value)"></select>
+</div>
+
+<!-- SCORE BAR -->
+<div class="score-bar">
+  <div class="score-pill">📊 Score <b id="s_score">–</b>/15</div>
+  <div class="score-pill">⭐ Bonus <b id="s_bonus">–</b>/5</div>
+  <div class="score-pill">😴 Sleep <b id="s_sleep">–</b>h</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-log" onclick="showPage('log')">
+    <div class="nav-icon">📝</div>Log
+  </div>
+  <div class="nav-item" id="nav-history" onclick="showPage('history')">
+    <div class="nav-icon">📅</div>History
+  </div>
+</div>
+
+<div class="snackbar" id="snackbar"></div>
+
+<!-- ── LOG PAGE ── -->
+<div class="page active" id="page-log">
+
+<!-- SLEEP -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('sleep')">
+    <div class="card-title"><span class="section-dot" style="background:#3498DB"></span>Sleep</div>
+    <div class="chevron open" id="chev-sleep">▾</div>
+  </div>
+  <div class="card-body" id="body-sleep">
+    <div class="field-row2">
+      <div class="field"><label>Wake up time</label><input type="time" id="f_wake" onchange="autoSave('Wake up time',this.value);calcSleep()"></div>
+      <div class="field"><label>Slept at</label><input type="time" id="f_slept" onchange="autoSave('Slept at',this.value);calcSleep()"></div>
+    </div>
+    <div class="field"><label>Hours of sleep</label><div id="sleep_display" style="font-size:28px;font-weight:700;color:var(--primary);padding:4px 0">–</div></div>
+  </div>
+</div>
+
+<!-- MORNING ROUTINE -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('morning')">
+    <div class="card-title"><span class="section-dot" style="background:#2ECC71"></span>Morning Routine</div>
+    <div class="chevron open" id="chev-morning">▾</div>
+  </div>
+  <div class="card-body" id="body-morning">
+    <div class="field"><label>Done today</label>
+      <div class="chips" id="grp_morning">
+        <div class="chip" onclick="toggleChip(this,'grp_morning','Morning routine done')">💧 Lukewarm water</div>
+        <div class="chip" onclick="toggleChip(this,'grp_morning','Morning routine done')">🌿 CCF tea</div>
+        <div class="chip" onclick="toggleChip(this,'grp_morning','Morning routine done')">🥜 Almonds+Walnuts</div>
+        <div class="chip" onclick="toggleChip(this,'grp_morning','Morning routine done')">🚶 7min walk</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TREADMILL -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('treadmill')">
+    <div class="card-title"><span class="section-dot" style="background:#F39C12"></span>Treadmill</div>
+    <div class="chevron open" id="chev-treadmill">▾</div>
+  </div>
+  <div class="card-body" id="body-treadmill">
+    <div class="field-row2">
+      <div class="field"><label>Time</label><input type="time" id="f_t_time" onchange="autoSave('Treadmill time',this.value)"></div>
+      <div class="field"><label>Distance (kms)</label><input type="number" id="f_t_kms" step="0.1" min="0" placeholder="e.g. 2" onchange="autoSave('Treadmill kms',this.value)"></div>
+    </div>
+    <div class="field-row3">
+      <div class="field"><label>Duration (mins)</label><input type="number" id="f_t_dur" min="0" placeholder="35" onchange="autoSave('Treadmill duration (mins)',this.value)"></div>
+      <div class="field"><label>Incline</label><input type="number" id="f_t_inc" step="0.5" min="0" placeholder="0" onchange="autoSave('Treadmill incline',this.value)"></div>
+      <div class="field"><label>Max speed</label><input type="number" id="f_t_spd" step="0.1" min="0" placeholder="5.6" onchange="autoSave('Treadmill max speed',this.value)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MEALS -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('meals')">
+    <div class="card-title"><span class="section-dot" style="background:#E74C3C"></span>Meals</div>
+    <div class="chevron open" id="chev-meals">▾</div>
+  </div>
+  <div class="card-body" id="body-meals">
+    <div class="field">
+      <div class="chips" id="grp_meal_type">
+        <div class="chip on" onclick="selectMealType(this,'Breakfast')">🍳 Breakfast</div>
+        <div class="chip" onclick="selectMealType(this,'Lunch')">🥗 Lunch</div>
+        <div class="chip" onclick="selectMealType(this,'Dinner')">🍽️ Dinner</div>
+      </div>
+    </div>
+    <div class="field-row2">
+      <div class="field"><label>Time</label><input type="time" id="f_meal_time"></div>
+      <div class="field" style="display:flex;align-items:flex-end">
+        <div class="chip" id="cb_ate_slowly" onclick="this.classList.toggle('on')" style="width:100%;justify-content:center">🐢 Ate slowly</div>
+      </div>
+    </div>
+    <div class="field"><label>Description</label><textarea id="f_meal_desc" placeholder="e.g. 2 eggs, oats chilla" rows="2"></textarea></div>
+
+    <div class="cond" id="cond_bfast">
+      <div class="field"><label>Contents</label>
+        <div class="chips" id="grp_bfast_contents">
+          <div class="chip" onclick="toggleChip(this,'grp_bfast_contents',null)">🥚 Eggs</div>
+          <div class="chip" onclick="toggleChip(this,'grp_bfast_contents',null)">🧀 Paneer</div>
+          <div class="chip" onclick="toggleChip(this,'grp_bfast_contents',null)">🫓 Chilla</div>
+          <div class="chip" onclick="toggleChip(this,'grp_bfast_contents',null)">🌾 Oats</div>
+          <div class="chip" onclick="toggleChip(this,'grp_bfast_contents',null)">Other</div>
+        </div>
+      </div>
+    </div>
+    <div class="cond" id="cond_lunch">
+      <div class="chips">
+        <div class="chip" id="cb_pre_lunch_g" onclick="this.classList.toggle('on')">🫚 Pre-lunch ginger</div>
+        <div class="chip" id="cb_cucumber" onclick="this.classList.toggle('on')">🥒 Cucumber salad</div>
+        <div class="chip" id="cb_post_lunch_w" onclick="this.classList.toggle('on')">🚶 Post-lunch walk</div>
+      </div>
+    </div>
+    <div class="cond" id="cond_dinner">
+      <div class="chips">
+        <div class="chip" id="cb_pre_dinner_g" onclick="this.classList.toggle('on')">🫚 Pre-dinner ginger</div>
+        <div class="chip" id="cb_post_dinner_w" onclick="this.classList.toggle('on')">🚶 Post-dinner walk</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveMeal()">💾 Save meal</button>
+    <div class="entries" id="meal_entries"><div class="no-entry">No meals saved yet</div></div>
+  </div>
+</div>
+
+<!-- FOOD & DRINK LOG -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('fd')">
+    <div class="card-title"><span class="section-dot" style="background:#9B59B6"></span>Food & Drink Log</div>
+    <div class="chevron open" id="chev-fd">▾</div>
+  </div>
+  <div class="card-body" id="body-fd">
+    <div class="field">
+      <div class="chips" id="grp_fd_cat">
+        <div class="chip on" onclick="selectFdCat(this,'Mid morning snack')">Mid morning</div>
+        <div class="chip" onclick="selectFdCat(this,'Post lunch snack')">Post lunch</div>
+        <div class="chip" onclick="selectFdCat(this,'Evening snack')">Evening</div>
+        <div class="chip" onclick="selectFdCat(this,'After dinner snack')">After dinner</div>
+        <div class="chip" onclick="selectFdCat(this,'Coffee')">☕ Coffee</div>
+        <div class="chip" onclick="selectFdCat(this,'Junk/Sugar')">🍭 Junk/Sugar</div>
+        <div class="chip" onclick="selectFdCat(this,'Alcohol')">🍺 Alcohol</div>
+        <div class="chip" onclick="selectFdCat(this,'Thumbs Up')">👍 Thumbs Up</div>
+      </div>
+    </div>
+    <div class="field-row2">
+      <div class="field"><label>Time</label><input type="time" id="f_fd_time"></div>
+      <div class="field"><label>Detail</label><input type="text" id="f_fd_detail" placeholder="Description"></div>
+    </div>
+    <div class="cond" id="cond_coffee">
+      <div class="field-row2">
+        <div class="field"><label>Count</label><input type="number" id="f_coffee_n" min="1" max="10" placeholder="1"></div>
+        <div class="field"><label>Type</label>
+          <div class="chips" id="grp_coffee_type">
+            <div class="chip" onclick="toggleChip(this,'grp_coffee_type',null)">Black</div>
+            <div class="chip" onclick="toggleChip(this,'grp_coffee_type',null)">Milk</div>
+            <div class="chip" onclick="toggleChip(this,'grp_coffee_type',null)">Sugar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveFD()">💾 Save entry</button>
+    <div class="entries" id="fd_entries"><div class="no-entry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- WATER -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('water')">
+    <div class="card-title"><span class="section-dot" style="background:#3498DB"></span>Water</div>
+    <div class="chevron open" id="chev-water">▾</div>
+  </div>
+  <div class="card-body" id="body-water">
+    <div class="field"><label>Total today (litres) — target 2.5L</label>
+      <input type="number" id="f_water" step="0.25" min="0" max="10" placeholder="e.g. 1.5" onchange="autoSave('Water total (litres)',this.value);updateWaterBar(this.value)">
+    </div>
+    <div class="water-bar-bg"><div class="water-bar-fill" id="water_fill" style="width:0%"></div></div>
+    <div class="water-lbl" id="water_lbl">0 / 2.5L</div>
+  </div>
+</div>
+
+<!-- HEALTH & MOOD LOG -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('hm')">
+    <div class="card-title"><span class="section-dot" style="background:#2ECC71"></span>Health & Mood Log</div>
+    <div class="chevron open" id="chev-hm">▾</div>
+  </div>
+  <div class="card-body" id="body-hm">
+    <div class="field">
+      <div class="chips" id="grp_hm_cat">
+        <div class="chip on" onclick="selectHmCat(this,'Mood')">😊 Mood</div>
+        <div class="chip" onclick="selectHmCat(this,'Stress')">😤 Stress</div>
+        <div class="chip" onclick="selectHmCat(this,'Energy')">⚡ Energy</div>
+        <div class="chip" onclick="selectHmCat(this,'Exercise')">🏋️ Exercise</div>
+        <div class="chip" onclick="selectHmCat(this,'Headache')">🤕 Headache</div>
+        <div class="chip" onclick="selectHmCat(this,'Note')">📝 Note</div>
+      </div>
+    </div>
+    <div class="field"><label>Time</label><input type="time" id="f_hm_time"></div>
+    <div class="cond show" id="cond_mood">
+      <div class="field"><label>How are you feeling?</label>
+        <div class="moods">
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Happy')">😊</div><div class="mood-lbl">Happy</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Good')">🙂</div><div class="mood-lbl">Good</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Relaxed')">😌</div><div class="mood-lbl">Relaxed</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Motivated')">💪</div><div class="mood-lbl">Motivated</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Neutral')">😐</div><div class="mood-lbl">Neutral</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Tired')">😴</div><div class="mood-lbl">Tired</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Low')">😔</div><div class="mood-lbl">Low</div></div>
+          <div class="mood-wrap"><div class="mood-btn" onclick="selectMood(this,'Angry')">😤</div><div class="mood-lbl">Angry</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cond" id="cond_level">
+      <div class="field"><label id="level_lbl">Level (1=Low 5=High)</label>
+        <div class="levels">
+          <div class="level-btn" onclick="selectLevel(this,1)">1</div>
+          <div class="level-btn" onclick="selectLevel(this,2)">2</div>
+          <div class="level-btn" onclick="selectLevel(this,3)">3</div>
+          <div class="level-btn" onclick="selectLevel(this,4)">4</div>
+          <div class="level-btn" onclick="selectLevel(this,5)">5</div>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label>Note (optional)</label><input type="text" id="f_hm_note" placeholder="e.g. left side headache, work deadline"></div>
+    <button class="btn-primary" onclick="saveHM()">💾 Save entry</button>
+    <div class="entries" id="hm_entries"><div class="no-entry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- MUSIC -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('music')">
+    <div class="card-title"><span class="section-dot" style="background:#F39C12"></span>Music</div>
+    <div class="chevron open" id="chev-music">▾</div>
+  </div>
+  <div class="card-body" id="body-music">
+    <div class="field"><label>Time</label><input type="time" id="f_music_time"></div>
+    <div class="field-row2">
+      <div class="field"><label>Mood before</label>
+        <div class="chips" id="grp_music_before">
+          <div class="chip" onclick="selectChip(this,'grp_music_before')">😔 Low</div>
+          <div class="chip" onclick="selectChip(this,'grp_music_before')">😐 Neutral</div>
+          <div class="chip" onclick="selectChip(this,'grp_music_before')">🙂 Good</div>
+          <div class="chip" onclick="selectChip(this,'grp_music_before')">😊 Happy</div>
+        </div>
+      </div>
+      <div class="field"><label>Mood after</label>
+        <div class="chips" id="grp_music_after">
+          <div class="chip" onclick="selectChip(this,'grp_music_after')">😔 Low</div>
+          <div class="chip" onclick="selectChip(this,'grp_music_after')">😐 Neutral</div>
+          <div class="chip" onclick="selectChip(this,'grp_music_after')">🙂 Good</div>
+          <div class="chip" onclick="selectChip(this,'grp_music_after')">😊 Happy</div>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label>What</label><input type="text" id="f_music_what" placeholder="e.g. jazz, 30 mins, Spotify"></div>
+    <button class="btn-primary" onclick="saveMusic()">💾 Save entry</button>
+    <div class="entries" id="music_entries"><div class="no-entry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- PERSONAL CARE -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('care')">
+    <div class="card-title"><span class="section-dot" style="background:#E74C3C"></span>Personal Care</div>
+    <div class="chevron open" id="chev-care">▾</div>
+  </div>
+  <div class="card-body" id="body-care">
+    <div class="chips" id="grp_care">
+      <div class="chip" onclick="toggleChip(this,'grp_care','Shaved')">🪒 Shaved</div>
+      <div class="chip" onclick="toggleChip(this,'grp_care','Dress up well')">👔 Dressed well</div>
+      <div class="chip" onclick="toggleChip(this,'grp_care','Sunlight')">☀️ Sunlight</div>
+      <div class="chip" onclick="toggleChip(this,'grp_care','Housekeeping')">🧹 Housekeeping</div>
+      <div class="chip" onclick="toggleChip(this,'grp_care','Gratitude')">🙏 Gratitude</div>
+    </div>
+  </div>
+</div>
+
+<!-- NIGHT ROUTINE -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('night')">
+    <div class="card-title"><span class="section-dot" style="background:#9B59B6"></span>Night Routine</div>
+    <div class="chevron open" id="chev-night">▾</div>
+  </div>
+  <div class="card-body" id="body-night">
+    <div class="chips" id="grp_night">
+      <div class="chip" onclick="toggleChip(this,'grp_night','Night routine done')">🚶 Post dinner walk</div>
+      <div class="chip" onclick="toggleChip(this,'grp_night','Night routine done')">🍵 Chamomile tea</div>
+      <div class="chip" onclick="toggleChip(this,'grp_night','Night routine done')">🥜 Pista</div>
+      <div class="chip" onclick="toggleChip(this,'grp_night','Night routine done')">🪥 Brush at night</div>
+      <div class="chip" onclick="toggleChip(this,'grp_night','Night routine done')">💡 Lights dimmed</div>
+      <div class="chip" onclick="toggleChip(this,'grp_night','Night routine done')">🧴 Face wash</div>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTIONS -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('reflect')">
+    <div class="card-title"><span class="section-dot" style="background:#3498DB"></span>Reflections</div>
+    <div class="chevron open" id="chev-reflect">▾</div>
+  </div>
+  <div class="card-body" id="body-reflect">
+    <div class="field">
+      <div class="chips" id="grp_reflect_cat">
+        <div class="chip on" onclick="selectChip(this,'grp_reflect_cat')">✨ Story moment</div>
+        <div class="chip" onclick="selectChip(this,'grp_reflect_cat')">😄 Brought joy</div>
+        <div class="chip" onclick="selectChip(this,'grp_reflect_cat')">🎉 Fun moment</div>
+        <div class="chip" onclick="selectChip(this,'grp_reflect_cat')">💬 Compliment</div>
+        <div class="chip" onclick="selectChip(this,'grp_reflect_cat')">🚫 Said no</div>
+      </div>
+    </div>
+    <div class="field"><label>Detail</label><textarea id="f_reflect_detail" placeholder="What happened?" rows="2"></textarea></div>
+    <button class="btn-primary" onclick="saveReflect()">💾 Save</button>
+    <div class="entries" id="reflect_entries"><div class="no-entry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- PRIVATE TRACKER -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('private')">
+    <div class="card-title"><span class="section-dot" style="background:#95A5A6"></span>Private Tracker</div>
+    <div class="chevron open" id="chev-private">▾</div>
+  </div>
+  <div class="card-body" id="body-private">
+    <div class="field">
+      <div class="chips" id="grp_private_cat">
+        <div class="chip on" onclick="selectChip(this,'grp_private_cat')">M</div>
+        <div class="chip" onclick="selectChip(this,'grp_private_cat')">T</div>
+        <div class="chip" onclick="selectChip(this,'grp_private_cat')">Y</div>
+        <div class="chip" onclick="selectChip(this,'grp_private_cat')">R</div>
+      </div>
+    </div>
+    <div class="field-row2">
+      <div class="field"><label>Time</label><input type="time" id="f_priv_time"></div>
+      <div class="field"><label>Value</label><input type="number" id="f_priv_val" step="0.5" placeholder="e.g. 1"></div>
+    </div>
+    <button class="btn-primary" onclick="savePrivate()">💾 Save</button>
+    <div class="entries" id="private_entries"><div class="no-entry">No entries yet</div></div>
+  </div>
+</div>
+
+<!-- WEEKLY METRICS -->
+<div class="card" id="weekly_card">
+  <div class="card-header" onclick="toggleCard('weekly')">
+    <div class="card-title"><span class="section-dot" style="background:#2ECC71"></span>Weekly Metrics</div>
+    <div class="chevron open" id="chev-weekly">▾</div>
+  </div>
+  <div class="card-body" id="body-weekly">
+    <div class="field-row2">
+      <div class="field"><label>Weight (kg)</label><input type="number" id="f_weight" step="0.1" placeholder="e.g. 99.5" onchange="autoSave('Weight (kg)',this.value)"></div>
+      <div class="field"><label>Waistline (cm)</label><input type="number" id="f_waist" step="0.5" placeholder="e.g. 99" onchange="autoSave('Waistline (cm)',this.value)"></div>
+    </div>
+    <div id="weekly_note" style="font-size:15px;color:var(--text2);font-style:italic"></div>
+  </div>
+</div>
+
+</div><!-- end log page -->
+
+<!-- HISTORY PAGE -->
+<div class="page" id="page-history">
+  <div id="history_content" class="loading">Loading...</div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzrCrxU77PU2fGgVyGmvKo1INP3xDir-fgoA1YANdIEg7n5Xq9d5ndYHeREYvBxdeA6gA/exec';
+
+let currentDate = todayStr();
+let mealType = 'Breakfast';
+let fdCat = 'Mid morning snack';
+let hmCat = 'Mood';
+let selMood = '';
+let selLevel = 0;
+
+// ── INIT ─────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  buildDateSelector();
+  setNowTimes();
+  loadDay(currentDate);
+  if (new Date().getDay() !== 0) {
+    document.getElementById('weekly_note').textContent = 'Log weight & waistline on Sundays';
+    document.getElementById('weekly_card').style.opacity = '0.5';
+  }
+});
+
+function todayStr() {
+  const now = new Date();
+  const ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+  return ist.toISOString().split('T')[0];
+}
+
+function nowTime() {
+  const now = new Date();
+  const ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+  return ist.toISOString().split('T')[1].slice(0,5);
+}
+
+function buildDateSelector() {
+  const sel = document.getElementById('dateSelect');
+  for (let i = 0; i < 30; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const str = d.toISOString().split('T')[0];
+    const lbl = i === 0 ? 'Today' : i === 1 ? 'Yesterday' :
+      d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+    const opt = document.createElement('option');
+    opt.value = str; opt.textContent = lbl;
+    if (str === currentDate) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function setNowTimes() {
+  const t = nowTime();
+  ['f_hm_time','f_fd_time','f_music_time','f_priv_time','f_meal_time'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = t;
+  });
+}
+
+function onDateChange(val) {
+  currentDate = val;
+  loadDay(val);
+}
+
+// ── API CALLS ─────────────────────────────────────────────────
+function api(action, params, cb) {
+  const url = API + '?action=' + action + '&' + new URLSearchParams(params).toString();
+  fetch(url)
+    .then(r => r.json())
+    .then(cb)
+    .catch(e => snack('Error: ' + e.message));
+}
+
+function apiPost(action, body, cb) {
+  fetch(API + '?action=' + action, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(r => r.json()).then(cb).catch(e => snack('Error: ' + e.message));
+}
+
+function loadDay(dateStr) {
+  api('getRow', { date: dateStr }, res => {
+    if (res.success) populateFields(JSON.parse(res.data));
+  });
+  api('getEvents', { date: dateStr }, res => {
+    if (res.success) populateEvents(JSON.parse(res.data));
+  });
+}
+
+function autoSave(field, value) {
+  if (!value) return;
+  apiPost('saveField', { date: currentDate, field, value }, res => {
+    if (res.success) snack('✓ Saved');
+  });
+}
+
+function appendEvent(category, detail, numVal, moodScore) {
+  const time = document.getElementById('f_hm_time') ? document.getElementById('f_hm_time').value : nowTime();
+  apiPost('appendEvent', { date: currentDate, time, category, detail: detail||'', numVal: numVal||'', moodScore: moodScore||'' }, res => {
+    if (res.success) { snack('✓ ' + category + ' saved'); loadDay(currentDate); }
+  });
+}
+
+// ── POPULATE ──────────────────────────────────────────────────
+function populateFields(d) {
+  setField('f_wake', fmtTime(d['Wake up time']));
+  setField('f_slept', fmtTime(d['Slept at']));
+  setField('f_t_kms', d['Treadmill kms']);
+  setField('f_t_dur', d['Treadmill duration (mins)']);
+  setField('f_t_inc', d['Treadmill incline']);
+  setField('f_t_spd', d['Treadmill max speed']);
+  setField('f_water', d['Water total (litres)']);
+  setField('f_weight', d['Weight (kg)']);
+  setField('f_waist', d['Waistline (cm)']);
+  if (d['Water total (litres)']) updateWaterBar(d['Water total (litres)']);
+  if (d['Hours of sleep']) updateSleepDisplay(d['Hours of sleep']);
+  restoreChips('grp_morning', d['Morning routine done']);
+  restoreChips('grp_night', d['Night routine done']);
+  // Personal care
+  const careMap = { 'Shaved':'🪒 Shaved', 'Dress up well':'👔 Dressed well', 'Sunlight':'☀️ Sunlight', 'Housekeeping':'🧹 Housekeeping', 'Gratitude':'🙏 Gratitude' };
+  document.querySelectorAll('#grp_care .chip').forEach(c => {
+    const key = Object.keys(careMap).find(k => c.textContent.trim() === careMap[k]);
+    if (key && (d[key] === 'Yes' || d[key] === true)) c.classList.add('on');
+  });
+}
+
+function populateEvents(events) {
+  const meals = events.filter(e => ['Breakfast','Lunch','Dinner'].includes(e.Category));
+  const fd = events.filter(e => ['Mid morning snack','Post lunch snack','Evening snack','After dinner snack','Coffee','Junk/Sugar','Alcohol','Thumbs Up'].includes(e.Category));
+  const hm = events.filter(e => ['Mood','Stress','Energy','Exercise','Headache','Note'].includes(e.Category));
+  const music = events.filter(e => e.Category === 'Music');
+  const reflect = events.filter(e => e.Category === 'Reflection');
+  const priv = events.filter(e => ['Private-M','Private-T','Private-Y','Private-R'].includes(e.Category));
+  renderEntries('meal_entries', meals);
+  renderEntries('fd_entries', fd);
+  renderEntries('hm_entries', hm);
+  renderEntries('music_entries', music);
+  renderEntries('reflect_entries', reflect);
+  renderEntries('private_entries', priv);
+  updateScoreBar(events);
+}
+
+function renderEntries(id, entries) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!entries.length) { el.innerHTML = '<div class="no-entry">No entries yet</div>'; return; }
+  el.innerHTML = entries.map(e => {
+    const t = e.Time ? String(e.Time).slice(0,5) : '';
+    return `<div class="entry"><span class="entry-time">${t}</span><span class="entry-cat">${e.Category}</span><span class="entry-detail">${e.Detail||''}${e['Numeric value']?' · '+e['Numeric value']:''}</span></div>`;
+  }).join('');
+}
+
+function updateScoreBar(events) {
+  // Basic score calculation from events
+  const moodGood = events.some(e => e.Category === 'Mood' && ['Happy','Good','Motivated','Relaxed'].includes((e.Detail||'').split('·')[0].trim()));
+  const noHeadache = !events.some(e => e.Category === 'Headache');
+  document.getElementById('s_score').textContent = '–';
+  document.getElementById('s_bonus').textContent = '–';
+}
+
+function updateSleepDisplay(val) {
+  const h = parseFloat(val);
+  const el = document.getElementById('sleep_display');
+  if (isNaN(h)) { el.textContent = '–'; return; }
+  el.textContent = h.toFixed(1) + 'h';
+  el.style.color = h >= 7 ? 'var(--green)' : h >= 6 ? 'var(--primary)' : 'var(--amber)';
+  document.getElementById('s_sleep').textContent = h.toFixed(1);
+}
+
+function updateWaterBar(val) {
+  const v = parseFloat(val) || 0;
+  const pct = Math.min(v / 2.5 * 100, 100);
+  document.getElementById('water_fill').style.width = pct + '%';
+  document.getElementById('water_fill').style.background = pct >= 100 ? 'var(--green)' : pct >= 60 ? 'var(--primary)' : 'var(--amber)';
+  document.getElementById('water_lbl').textContent = v + 'L / 2.5L';
+}
+
+// ── SAVE FUNCTIONS ────────────────────────────────────────────
+function saveMeal() {
+  const time = document.getElementById('f_meal_time').value;
+  const desc = document.getElementById('f_meal_desc').value;
+  if (!time && !desc) { snack('Please enter time or description'); return; }
+  const ateSlowly = document.getElementById('cb_ate_slowly').classList.contains('on');
+  const contents = getChecked('grp_bfast_contents');
+  let detail = desc;
+  if (contents.length) detail += ' | ' + contents.join(', ');
+  if (ateSlowly) detail += ' | Ate slowly';
+
+  // Save structured fields
+  const saves = {};
+  if (mealType === 'Breakfast') {
+    saves['Breakfast time'] = time;
+    saves['Breakfast description'] = desc;
+    saves['Breakfast contents'] = contents.join(', ');
+    saves['Breakfast ate slowly'] = ateSlowly ? 'Yes' : 'No';
+  } else if (mealType === 'Lunch') {
+    saves['Lunch time'] = time;
+    saves['Lunch description'] = desc;
+    saves['Lunch pre ginger'] = document.getElementById('cb_pre_lunch_g').classList.contains('on') ? 'Yes' : 'No';
+    saves['Lunch cucumber salad'] = document.getElementById('cb_cucumber').classList.contains('on') ? 'Yes' : 'No';
+    saves['Lunch post walk'] = document.getElementById('cb_post_lunch_w').classList.contains('on') ? 'Yes' : 'No';
+    saves['Lunch ate slowly'] = ateSlowly ? 'Yes' : 'No';
+  } else if (mealType === 'Dinner') {
+    saves['Dinner time'] = time;
+    saves['Dinner description'] = desc;
+    saves['Dinner pre ginger'] = document.getElementById('cb_pre_dinner_g').classList.contains('on') ? 'Yes' : 'No';
+    saves['Dinner post walk'] = document.getElementById('cb_post_dinner_w').classList.contains('on') ? 'Yes' : 'No';
+    saves['Dinner ate slowly'] = ateSlowly ? 'Yes' : 'No';
+  }
+  Object.entries(saves).forEach(([f,v]) => apiPost('saveField', { date: currentDate, field: f, value: v }, () => {}));
+
+  apiPost('appendEvent', { date: currentDate, time, category: mealType, detail, numVal: '', moodScore: '' }, res => {
+    if (res.success) { snack('✓ ' + mealType + ' saved'); loadDay(currentDate); document.getElementById('f_meal_desc').value = ''; }
+  });
+}
+
+function saveFD() {
+  const time = document.getElementById('f_fd_time').value;
+  let detail = document.getElementById('f_fd_detail').value;
+  if (fdCat === 'Coffee') {
+    const n = document.getElementById('f_coffee_n').value || '1';
+    const types = getChecked('grp_coffee_type');
+    detail = n + ' coffee' + (types.length ? '('+types.join('+')+')' : '') + (detail ? ' · '+detail : '');
+  }
+  apiPost('appendEvent', { date: currentDate, time, category: fdCat, detail, numVal: '', moodScore: '' }, res => {
+    if (res.success) { snack('✓ Saved'); loadDay(currentDate); document.getElementById('f_fd_detail').value = ''; }
+  });
+}
+
+function saveHM() {
+  const time = document.getElementById('f_hm_time').value;
+  const note = document.getElementById('f_hm_note').value;
+  let detail = note;
+  let moodScore = '';
+  if (hmCat === 'Mood' && selMood) { detail = selMood + (note ? ' · '+note : ''); moodScore = getMoodScore(selMood); }
+  if ((hmCat==='Stress'||hmCat==='Energy') && selLevel) detail = 'Level '+selLevel+(note?' · '+note:'');
+  apiPost('appendEvent', { date: currentDate, time, category: hmCat, detail, numVal: selLevel||'', moodScore }, res => {
+    if (res.success) {
+      snack('✓ Saved'); loadDay(currentDate);
+      document.getElementById('f_hm_note').value = '';
+      selMood = ''; selLevel = 0;
+      document.querySelectorAll('.mood-btn').forEach(m => m.classList.remove('on'));
+      document.querySelectorAll('.level-btn').forEach(l => l.classList.remove('on'));
+    }
+  });
+}
+
+function saveMusic() {
+  const time = document.getElementById('f_music_time').value;
+  const what = document.getElementById('f_music_what').value;
+  const before = getSelected('grp_music_before');
+  const after = getSelected('grp_music_after');
+  const detail = (before?'Before: '+before:'') + (after?' → After: '+after:'') + (what?' · '+what:'');
+  apiPost('appendEvent', { date: currentDate, time, category: 'Music', detail, numVal: '', moodScore: '' }, res => {
+    if (res.success) { snack('✓ Music saved'); loadDay(currentDate); document.getElementById('f_music_what').value = ''; }
+  });
+}
+
+function saveReflect() {
+  const cat = getSelected('grp_reflect_cat') || 'Story moment';
+  const detail = document.getElementById('f_reflect_detail').value;
+  if (!detail) { snack('Please enter a detail'); return; }
+  apiPost('appendEvent', { date: currentDate, time: nowTime(), category: 'Reflection', detail: cat+': '+detail, numVal: '', moodScore: '' }, res => {
+    if (res.success) { snack('✓ Saved'); loadDay(currentDate); document.getElementById('f_reflect_detail').value = ''; }
+  });
+}
+
+function savePrivate() {
+  const cat = getSelected('grp_private_cat') || 'M';
+  const time = document.getElementById('f_priv_time').value;
+  const val = document.getElementById('f_priv_val').value;
+  apiPost('appendEvent', { date: currentDate, time, category: 'Private-'+cat, detail: '', numVal: val, moodScore: '' }, res => {
+    if (res.success) { snack('✓ Saved'); loadDay(currentDate); document.getElementById('f_priv_val').value = ''; }
+  });
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────
+function toggleCard(id) {
+  const body = document.getElementById('body-'+id);
+  const chev = document.getElementById('chev-'+id);
+  const isOpen = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+function toggleChip(el, groupId, field) {
+  el.classList.toggle('on');
+  if (field) {
+    const checked = getChecked(groupId);
+    autoSave(field, checked.join(', '));
+  }
+}
+
+function selectChip(el, groupId) {
+  document.querySelectorAll('#'+groupId+' .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function selectMealType(el, type) {
+  mealType = type;
+  document.querySelectorAll('#grp_meal_type .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cond_bfast').classList.toggle('show', type==='Breakfast');
+  document.getElementById('cond_lunch').classList.toggle('show', type==='Lunch');
+  document.getElementById('cond_dinner').classList.toggle('show', type==='Dinner');
+}
+
+function selectFdCat(el, cat) {
+  fdCat = cat;
+  document.querySelectorAll('#grp_fd_cat .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cond_coffee').classList.toggle('show', cat==='Coffee');
+}
+
+function selectHmCat(el, cat) {
+  hmCat = cat;
+  document.querySelectorAll('#grp_hm_cat .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('cond_mood').classList.toggle('show', cat==='Mood');
+  document.getElementById('cond_level').classList.toggle('show', cat==='Stress'||cat==='Energy');
+  if (cat==='Stress') document.getElementById('level_lbl').textContent = 'Stress level (1=Low 5=High)';
+  if (cat==='Energy') document.getElementById('level_lbl').textContent = 'Energy level (1=Drained 5=High)';
+}
+
+function selectMood(el, mood) {
+  document.querySelectorAll('.mood-btn').forEach(m => m.classList.remove('on'));
+  el.classList.add('on');
+  selMood = mood;
+}
+
+function selectLevel(el, level) {
+  document.querySelectorAll('.level-btn').forEach(l => l.classList.remove('on'));
+  el.classList.add('on');
+  selLevel = level;
+}
+
+function getMoodScore(m) {
+  return { Happy:5, Good:4, Relaxed:4, Motivated:5, Neutral:3, Tired:2, Low:1, Angry:2 }[m] || '';
+}
+
+function getChecked(groupId) {
+  return Array.from(document.querySelectorAll('#'+groupId+' .chip.on')).map(c => c.textContent.trim().replace(/^\S+\s/,''));
+}
+
+function getSelected(groupId) {
+  const el = document.querySelector('#'+groupId+' .chip.on');
+  return el ? el.textContent.trim() : '';
+}
+
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (el && val !== undefined && val !== null && val !== '') el.value = val;
+}
+
+function fmtTime(v) {
+  if (!v) return '';
+  if (typeof v === 'string' && v.includes(':')) return v.slice(0,5);
+  return '';
+}
+
+function restoreChips(groupId, val) {
+  if (!val) return;
+  const items = val.toString().split(',').map(s => s.trim());
+  document.querySelectorAll('#'+groupId+' .chip').forEach(c => {
+    if (items.some(item => c.textContent.trim().includes(item))) c.classList.add('on');
+  });
+}
+
+function calcSleep() {
+  const wake = document.getElementById('f_wake').value;
+  const slept = document.getElementById('f_slept').value;
+  if (!wake || !slept) return;
+  const wm = toMin(wake), sm = toMin(slept);
+  let diff = wm - sm;
+  if (diff < 0) diff += 1440;
+  const h = diff / 60;
+  updateSleepDisplay(h);
+  autoSave('Hours of sleep', h.toFixed(2));
+}
+
+function toMin(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+
+function snack(msg) {
+  const sb = document.getElementById('snackbar');
+  sb.textContent = msg;
+  sb.classList.add('show');
+  setTimeout(() => sb.classList.remove('show'), 2500);
+}
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('nav-'+p).classList.add('active');
+  if (p === 'history') loadHistory();
+}
+
+function loadHistory() {
+  const el = document.getElementById('history_content');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+  api('getDates', {}, res => {
+    if (!res.success) { el.innerHTML = '<div class="loading">Error</div>'; return; }
+    const dates = JSON.parse(res.dates).reverse();
+    if (!dates.length) { el.innerHTML = '<div class="loading">No data yet</div>'; return; }
+    el.innerHTML = dates.slice(0,30).map(d => {
+      const lbl = new Date(d+'T12:00:00').toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'short', year:'numeric' });
+      return `<div class="hist-card" onclick="onDateChange('${d}');showPage('log')"><div class="hist-date">${lbl}</div><div class="hist-sub">Tap to view or edit →</div></div>`;
+    }).join('');
+  });
+}
+</script>
+</body>
+</html>
 
