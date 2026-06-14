@@ -30,18 +30,27 @@ html { font-size: var(--F); -webkit-text-size-adjust: none; text-size-adjust: no
 body { font-family: -apple-system, 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: calc(var(--nav-h) + 16px); }
 input, textarea, select, button { font-size: var(--F) !important; font-family: inherit; touch-action: manipulation; }
 
+/* TOP BAR */
 .topbar { background: var(--primary-dark); color: #fff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); min-height: 48px; }
 .topbar h1 { font-size: 16px; font-weight: 500; }
 #dateSelect { background: rgba(255,255,255,0.15); border: none; color: #fff; padding: 6px 10px; border-radius: 16px; font-size: 13px !important; }
 
+/* SCORE STRIP */
+.scorestrip { background: #12213a; padding: 6px 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.spill { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 3px 10px; font-size: 13px; color: rgba(255,255,255,0.85); white-space: nowrap; }
+.spill b { color: #fff; }
+
+/* BOTTOM NAV */
 .botnav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-h); background: var(--primary-dark); display: flex; z-index: 100; box-shadow: 0 -2px 8px rgba(0,0,0,0.2); padding-bottom: env(safe-area-inset-bottom); }
 .navitem { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); cursor: pointer; gap: 4px; font-size: 12px; }
 .navitem.on { color: #fff; }
 .navicon { font-size: 22px; }
 
+/* PAGES */
 .page { display: none; padding: 12px; }
 .page.on { display: block; }
 
+/* CARD */
 .card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 11px; overflow: hidden; }
 .cardhead { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; min-height: 48px; user-select: none; }
 .cardtitle { font-size: 15px; font-weight: 600; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
@@ -51,6 +60,7 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 .chev { font-size: 16px; color: var(--text2); transition: transform 0.2s; }
 .chev.open { transform: rotate(180deg); }
 
+/* FIELD */
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
 .req { color: var(--red); margin-left: 2px; }
@@ -65,57 +75,72 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
+/* TIME FIELD */
 .timefield { width: 100%; padding: 11px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: #FAFAFA; color: var(--text); min-height: 46px; cursor: pointer; font-size: var(--F); display: flex; align-items: center; justify-content: space-between; user-select: none; }
 .timefield:active { border-color: var(--primary); }
 .disabled-field { width: 100%; padding: 11px 12px; border: 1.5px solid #E0E0E0; border-radius: 8px; background: #F5F5F5; color: var(--text2); min-height: 46px; display: flex; align-items: center; font-size: var(--F); }
 
 /* TIME PICKER MODAL */
-.tp-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.tp-overlay.hide { display: none; }
-.tp-modal { background: #fff; border-radius: 16px; padding: 20px 18px; width: 100%; max-width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-.tp-title { font-size: 15px; font-weight: 600; color: var(--primary-dark); text-align: center; margin-bottom: 16px; }
-.tp-display { font-size: 32px; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 16px; letter-spacing: 2px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.hide { display: none; }
+.modal-box { background: #fff; border-radius: 16px; padding: 20px 18px; width: 100%; max-width: 320px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; }
+.modal-title { font-size: 16px; font-weight: 600; color: var(--primary-dark); text-align: center; margin-bottom: 16px; }
+
+.tp-display { font-size: 30px; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 14px; letter-spacing: 2px; }
 .tp-spinners { display: flex; align-items: center; justify-content: center; gap: 6px; }
 .tp-spinner { display: flex; flex-direction: column; align-items: center; }
-.tp-spin-btn { background: none; border: none; color: var(--primary); font-size: 26px; cursor: pointer; padding: 6px 14px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.tp-spin-btn { background: none; border: none; color: var(--primary); font-size: 24px; cursor: pointer; padding: 6px 14px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
 .tp-spin-btn:active { background: #E3F2FD; }
-.tp-spin-val { font-size: 28px; font-weight: 700; color: var(--text); min-width: 58px; text-align: center; padding: 6px 0; }
-.tp-colon { font-size: 28px; font-weight: 700; color: var(--text2); padding-bottom: 4px; }
-.tp-ampm-row { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
-.tp-ampm-btn { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; background: #fff; color: var(--text2); }
+.tp-spin-val { font-size: 26px; font-weight: 700; color: var(--text); min-width: 54px; text-align: center; padding: 4px 0; }
+.tp-colon { font-size: 26px; font-weight: 700; color: var(--text2); }
+.tp-ampm-row { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+.tp-ampm-btn { padding: 7px 20px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; background: #fff; color: var(--text2); }
 .tp-ampm-btn.on { background: var(--primary); border-color: var(--primary); color: #fff; }
-.tp-actions { display: flex; gap: 8px; margin-top: 16px; }
-.tp-cancel { flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; background: #fff; color: var(--text2); }
-.tp-ok { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; background: var(--primary); color: #fff; }
+.modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+.btn-cancel { flex: 1; padding: 11px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; background: #fff; color: var(--text2); }
+.btn-ok { flex: 1; padding: 11px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; background: var(--primary); color: #fff; }
 
-/* CHIPS — lighter selected color */
+/* WATER PICKER */
+.water-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+.water-chip { padding: 7px 12px; border: 1.5px solid var(--border); border-radius: 16px; font-size: 13px; cursor: pointer; background: #fff; color: var(--text2); transition: all 0.15s; }
+.water-chip.on { background: #E3F0FC; border-color: var(--primary-light); color: var(--primary); font-weight: 600; }
+
+/* CHIPS */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { padding: 8px 13px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; user-select: none; transition: all 0.15s; background: #fff; min-height: 40px; display: flex; align-items: center; }
 .chip.on { background: #E3F0FC; border-color: var(--primary-light); color: var(--primary); }
 
-/* Y/N TOGGLE */
-.yn-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+/* Y/N */
+.yn-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .yn-label { font-size: 14px; color: var(--text); flex: 1; }
-.yn-btns { display: flex; gap: 6px; }
-.yn-btn { padding: 6px 14px; border: 1.5px solid var(--border); border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; color: var(--text2); min-width: 38px; text-align: center; transition: all 0.15s; }
+.yn-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.yn-btn { padding: 6px 14px; border: 1.5px solid var(--border); border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; color: var(--text2); min-width: 38px; text-align: center; }
 .yn-btn.y.on { background: #E8F5E9; border-color: var(--green); color: var(--green); }
 .yn-btn.n.on { background: #FFEBEE; border-color: var(--red); color: var(--red); }
 
-/* MOOD */
+/* MOOD SELECTOR (Health & Mood style) */
 .moods { display: flex; gap: 6px; flex-wrap: wrap; }
 .moodwrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.moodbtn { font-size: 28px; padding: 6px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; min-width: 44px; text-align: center; }
+.moodbtn { font-size: 26px; padding: 6px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; min-width: 42px; text-align: center; }
 .moodbtn.on { border-color: var(--primary-light); background: #E3F0FC; }
 .moodlbl { font-size: 10px; color: var(--text2); }
 
 /* LEVELS */
 .levels { display: flex; gap: 8px; }
-.lvlbtn { flex: 1; padding: 12px 4px; text-align: center; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 17px; font-weight: 700; min-height: 48px; background: #fff; }
+.lvlbtn { flex: 1; padding: 11px 4px; text-align: center; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 700; min-height: 46px; background: #fff; }
 .lvlbtn.on { background: #E3F0FC; border-color: var(--primary-light); color: var(--primary); }
+
+/* FROM-TO TOGGLE */
+.fromto-toggle { display: flex; gap: 0; border: 1.5px solid var(--primary); border-radius: 20px; overflow: hidden; margin-bottom: 12px; }
+.fromto-btn { flex: 1; padding: 8px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--primary); background: #fff; }
+.fromto-btn.on { background: var(--primary); color: #fff; }
+.fromto-display { font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 10px; min-height: 20px; }
 
 /* SAVE BUTTON */
 .btnprimary { background: #fff; color: var(--primary); border: 2px solid var(--primary); border-radius: 8px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 8px; min-height: 46px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; }
 .btnprimary:active { background: var(--primary); color: #fff; }
+.btn-log { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-log:active { background: #1565C0; }
 
 /* ENTRIES TABLE */
 .entries { margin-top: 10px; }
@@ -123,19 +148,21 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 .etable th { text-align: left; padding: 4px 6px; color: var(--text2); font-weight: 500; border-bottom: 1.5px solid #E0E0E0; font-size: 12px; }
 .etable td { padding: 5px 6px; border-bottom: 0.5px solid #F0F0F0; }
 .etable tr:nth-child(even) td { background: #FAFAFA; }
-.etime { color: var(--primary); font-weight: 600; white-space: nowrap; }
+.etime { color: var(--primary); font-weight: 600; white-space: nowrap; font-size: 12px; }
 .ecat { color: var(--text2); white-space: nowrap; font-size: 12px; }
-.noentry { color: var(--text2); font-size: 14px; font-style: italic; padding: 6px 0; }
+.noentry { color: var(--text2); font-size: 13px; font-style: italic; padding: 6px 0; }
 
 /* WATER BAR */
 .wbar-bg { height: 12px; background: #E0E0E0; border-radius: 6px; overflow: hidden; margin-top: 7px; }
-.wbar-fill { height: 100%; background: var(--primary); border-radius: 6px; transition: width 0.4s; width: 0%; }
+.wbar-fill { height: 100%; border-radius: 6px; transition: width 0.4s; width: 0%; background: var(--primary); }
 .wbar-lbl { font-size: 12px; color: var(--text2); margin-top: 4px; }
 .sleep-display { font-size: 28px; font-weight: 700; color: var(--primary); padding: 3px 0; }
 
+/* COND */
 .cond { display: none; margin-top: 10px; }
 .cond.show { display: block; }
 
+/* SNACKBAR */
 .snack { position: fixed; bottom: calc(var(--nav-h) + 12px); left: 12px; right: 12px; background: #323232; color: #fff; padding: 12px 16px; border-radius: 8px; font-size: 14px; z-index: 999; transform: translateY(120px); opacity: 0; transition: all 0.3s; pointer-events: none; }
 .snack.show { transform: translateY(0); opacity: 1; }
 
@@ -148,6 +175,7 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 .histcard.red { border-left-color: var(--red); background: var(--red-bg); }
 .histdate { font-size: 15px; font-weight: 600; color: var(--primary-dark); }
 .histsub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.histscores { font-size: 12px; color: var(--primary); margin-top: 3px; }
 .histarrow { color: var(--text2); font-size: 18px; }
 .loading { text-align: center; padding: 40px 20px; color: var(--text2); font-size: 15px; }
 </style>
@@ -155,9 +183,9 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 <body>
 
 <!-- TIME PICKER MODAL -->
-<div class="tp-overlay hide" id="tp_overlay" onclick="tpOverlayClick(event)">
-  <div class="tp-modal">
-    <div class="tp-title" id="tp_title">Set time</div>
+<div class="modal-overlay hide" id="tp_overlay" onclick="tpOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-title" id="tp_title">Set time</div>
     <div class="tp-display" id="tp_display">12:00</div>
     <div class="tp-spinners">
       <div class="tp-spinner">
@@ -176,18 +204,90 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
       <div class="tp-ampm-btn on" id="tp_am" onclick="tpSetAMPM(true)">AM</div>
       <div class="tp-ampm-btn" id="tp_pm" onclick="tpSetAMPM(false)">PM</div>
     </div>
-    <div class="tp-actions">
-      <button class="tp-cancel" onclick="tpClose()">Cancel</button>
-      <button class="tp-ok" onclick="tpOK()">OK</button>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="tpClose()">Cancel</button>
+      <button class="btn-ok" onclick="tpOK()">OK</button>
     </div>
   </div>
 </div>
 
+<!-- TREADMILL MODAL -->
+<div class="modal-overlay hide" id="tm_overlay" onclick="if(event.target===this)this.classList.add('hide')">
+  <div class="modal-box">
+    <div class="modal-title">🏃 Log Treadmill</div>
+    <div class="g2">
+      <div class="field"><label>Distance (kms)</label><input type="number" id="tm_kms" step="0.1" min="0"></div>
+      <div class="field"><label>Time of day</label><div class="timefield" onclick="openTP('tm','Time',true,nowTime(),nowAMPM())"><span id="tfv_tm">–</span><span>🕐</span></div></div>
+    </div>
+    <div class="g3">
+      <div class="field"><label>Duration (mins)</label><input type="number" id="tm_dur" min="0"></div>
+      <div class="field"><label>Incline</label><input type="number" id="tm_inc" step="0.5" min="0"></div>
+      <div class="field"><label>Max speed</label><input type="number" id="tm_spd" step="0.1" min="0"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('tm_overlay').classList.add('hide')">Cancel</button>
+      <button class="btn-ok" onclick="saveTreadmill()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MUSIC MODAL -->
+<div class="modal-overlay hide" id="mu_overlay" onclick="if(event.target===this)this.classList.add('hide')">
+  <div class="modal-box">
+    <div class="modal-title">🎵 Log Music</div>
+    <div class="fromto-toggle">
+      <div class="fromto-btn on" id="mu_from_btn" onclick="setMusicMode('from')">From mood</div>
+      <div class="fromto-btn" id="mu_to_btn" onclick="setMusicMode('to')">To mood</div>
+    </div>
+    <div class="fromto-display" id="mu_display">–</div>
+    <div class="moods" id="mu_moods">
+      <div class="moodwrap"><div class="moodbtn" onclick="selMusicMood(this,'😔','Low')">😔</div><div class="moodlbl">Low</div></div>
+      <div class="moodwrap"><div class="moodbtn" onclick="selMusicMood(this,'😐','Neutral')">😐</div><div class="moodlbl">Neutral</div></div>
+      <div class="moodwrap"><div class="moodbtn" onclick="selMusicMood(this,'🙂','Good')">🙂</div><div class="moodlbl">Good</div></div>
+      <div class="moodwrap"><div class="moodbtn" onclick="selMusicMood(this,'😊','Happy')">😊</div><div class="moodlbl">Happy</div></div>
+      <div class="moodwrap"><div class="moodbtn" onclick="selMusicMood(this,'💪','Motivated')">💪</div><div class="moodlbl">Motivated</div></div>
+      <div class="moodwrap"><div class="moodbtn" onclick="selMusicMood(this,'😌','Relaxed')">😌</div><div class="moodlbl">Relaxed</div></div>
+    </div>
+    <div class="field" style="margin-top:12px"><label>What</label><input type="text" id="mu_what"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('mu_overlay').classList.add('hide')">Cancel</button>
+      <button class="btn-ok" onclick="saveMusic()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEST MODAL -->
+<div class="modal-overlay hide" id="test_overlay" onclick="if(event.target===this)this.classList.add('hide')">
+  <div class="modal-box">
+    <div class="modal-title">Test</div>
+    <div class="field"><label>Category</label>
+      <div class="chips" id="grp_priv">
+        <div class="chip on" onclick="selChip(this,'grp_priv')">M</div>
+        <div class="chip" onclick="selChip(this,'grp_priv')">T</div>
+        <div class="chip" onclick="selChip(this,'grp_priv')">Y</div>
+        <div class="chip" onclick="selChip(this,'grp_priv')">R</div>
+      </div>
+    </div>
+    <div class="field"><label>Value</label><input type="number" id="f_priv_val" step="0.5"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('test_overlay').classList.add('hide')">Cancel</button>
+      <button class="btn-ok" onclick="savePrivate()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
 <div class="topbar">
   <h1>🏃 Health Tracker</h1>
   <select id="dateSelect" onchange="onDateChange(this.value)"></select>
 </div>
+<div class="scorestrip" id="scorestrip">
+  <span class="spill">Score <b id="s_score">–</b>/15</span>
+  <span class="spill">Bonus <b id="s_bonus">–</b>/5</span>
+  <span class="spill">Sleep <b id="s_sleep">–</b>h</span>
+</div>
 
+<!-- BOTTOM NAV -->
 <div class="botnav">
   <div class="navitem on" id="nav-log" onclick="showPage('log')"><div class="navicon">📝</div>Log</div>
   <div class="navitem" id="nav-history" onclick="showPage('history')"><div class="navicon">📅</div>History</div>
@@ -219,10 +319,17 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 <div class="card">
   <div class="cardhead" onclick="tog('morning')"><div class="cardtitle"><span class="dot" style="background:#2ECC71"></span>Morning Routine</div><div class="chev open" id="chev-morning">▾</div></div>
   <div class="cardbody" id="body-morning">
-    <div class="yn-row"><span class="yn-label">💧 Lukewarm water</span><div class="yn-btns"><div class="yn-btn y" onclick="selYN(this,'yn_lw','Y','Morning routine done')">Y</div><div class="yn-btn n" onclick="selYN(this,'yn_lw','N','Morning routine done')">N</div></div></div>
-    <div class="yn-row"><span class="yn-label">🌿 CCF tea</span><div class="yn-btns"><div class="yn-btn y" onclick="selYN(this,'yn_ccf','Y','Morning routine done')">Y</div><div class="yn-btn n" onclick="selYN(this,'yn_ccf','N','Morning routine done')">N</div></div></div>
-    <div class="yn-row"><span class="yn-label">🥜 Almonds+Walnuts</span><div class="yn-btns"><div class="yn-btn y" onclick="selYN(this,'yn_aw','Y','Morning routine done')">Y</div><div class="yn-btn n" onclick="selYN(this,'yn_aw','N','Morning routine done')">N</div></div></div>
-    <div class="yn-row"><span class="yn-label">🚶 7min walk</span><div class="yn-btns"><div class="yn-btn y" onclick="selYN(this,'yn_7w','Y','Morning routine done')">Y</div><div class="yn-btn n" onclick="selYN(this,'yn_7w','N','Morning routine done')">N</div></div></div>
+    <div class="field">
+      <label>💧 Water on waking</label>
+      <div class="chips" id="grp_water_waking">
+        <div class="chip" onclick="selChip(this,'grp_water_waking');autoSave('Water after waking (glasses)','1')">1 glass</div>
+        <div class="chip" onclick="selChip(this,'grp_water_waking');autoSave('Water after waking (glasses)','2')">2 glasses</div>
+      </div>
+    </div>
+    <div class="yn-row"><span class="yn-label">💧 Lukewarm water</span><div class="yn-btns"><div class="yn-btn y" id="yn_lw_y" onclick="selYNid('yn_lw','Y','Lukewarm water')">Y</div><div class="yn-btn n" id="yn_lw_n" onclick="selYNid('yn_lw','N','Lukewarm water')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🌿 CCF tea</span><div class="yn-btns"><div class="yn-btn y" id="yn_ccf_y" onclick="selYNid('yn_ccf','Y','CCF tea')">Y</div><div class="yn-btn n" id="yn_ccf_n" onclick="selYNid('yn_ccf','N','CCF tea')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🥜 Almonds+Walnuts</span><div class="yn-btns"><div class="yn-btn y" id="yn_aw_y" onclick="selYNid('yn_aw','Y','Almonds+Walnuts')">Y</div><div class="yn-btn n" id="yn_aw_n" onclick="selYNid('yn_aw','N','Almonds+Walnuts')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🚶 7min walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_7w_y" onclick="selYNid('yn_7w','Y','7min walk')">Y</div><div class="yn-btn n" id="yn_7w_n" onclick="selYNid('yn_7w','N','7min walk')">N</div></div></div>
   </div>
 </div>
 
@@ -232,7 +339,7 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
   <div class="cardbody" id="body-water">
     <div class="field" id="fw_water">
       <label>Total today (litres) <span class="req">*</span> — target 2.5L</label>
-      <input type="number" id="f_water" step="0.25" min="0" max="10" onchange="autoSave('Water total (litres)',this.value);updateWbar(this.value)">
+      <div class="water-picker" id="water_picker"></div>
     </div>
     <div class="wbar-bg"><div class="wbar-fill" id="wbar"></div></div>
     <div class="wbar-lbl" id="wbar_lbl">0 / 2.5L</div>
@@ -243,15 +350,8 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 <div class="card">
   <div class="cardhead" onclick="tog('treadmill')"><div class="cardtitle"><span class="dot" style="background:#F39C12"></span>Treadmill</div><div class="chev open" id="chev-treadmill">▾</div></div>
   <div class="cardbody" id="body-treadmill">
-    <div class="g2">
-      <div class="field" id="fw_tkms"><label>Distance (kms) <span class="req">*</span></label><input type="number" id="f_t_kms" step="0.1" min="0" onchange="autoSave('Treadmill kms',this.value)"></div>
-      <div class="field"><label>Time of day</label><div class="timefield" onclick="openTP('treadmill','Treadmill time',true,nowTime(),nowAMPM())"><span id="tfv_treadmill">–</span><span>🕐</span></div></div>
-    </div>
-    <div class="g3">
-      <div class="field"><label>Duration (mins)</label><input type="number" id="f_t_dur" min="0" onchange="autoSave('Treadmill duration (mins)',this.value)"></div>
-      <div class="field"><label>Incline</label><input type="number" id="f_t_inc" step="0.5" min="0" onchange="autoSave('Treadmill incline',this.value)"></div>
-      <div class="field"><label>Max speed</label><input type="number" id="f_t_spd" step="0.1" min="0" onchange="autoSave('Treadmill max speed',this.value)"></div>
-    </div>
+    <button class="btn-log" onclick="openTreadmillModal()">🏃 Log treadmill session</button>
+    <div class="entries" id="treadmill_entries"><div class="noentry">No sessions logged yet</div></div>
   </div>
 </div>
 
@@ -270,7 +370,7 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
       <div class="field" id="fw_meal_time"><label>Time <span class="req">*</span></label><div class="timefield" onclick="openMealTP()"><span id="tfv_meal">08:30 AM</span><span>🕐</span></div></div>
       <div class="field" style="display:flex;align-items:flex-end">
         <div style="width:100%">
-          <div class="yn-label" style="font-size:13px;margin-bottom:4px">🐢 Ate slowly</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:4px">🐢 Ate slowly</div>
           <div class="yn-btns"><div class="yn-btn y" id="yn_ats_y" onclick="selYNid('yn_ats','Y',null)">Y</div><div class="yn-btn n" id="yn_ats_n" onclick="selYNid('yn_ats','N',null)">N</div></div>
         </div>
       </div>
@@ -388,27 +488,7 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 <div class="card">
   <div class="cardhead" onclick="tog('music')"><div class="cardtitle"><span class="dot" style="background:#F39C12"></span>Music</div><div class="chev open" id="chev-music">▾</div></div>
   <div class="cardbody" id="body-music">
-    <div class="field"><label>Time</label><div class="timefield" onclick="openTP('music','Time',true,nowTime(),nowAMPM())"><span id="tfv_music">–</span><span>🕐</span></div></div>
-    <div class="g2">
-      <div class="field"><label>Mood before</label>
-        <div class="chips" id="grp_mb">
-          <div class="chip" onclick="selChip(this,'grp_mb')">😔</div>
-          <div class="chip" onclick="selChip(this,'grp_mb')">😐</div>
-          <div class="chip" onclick="selChip(this,'grp_mb')">🙂</div>
-          <div class="chip" onclick="selChip(this,'grp_mb')">😊</div>
-        </div>
-      </div>
-      <div class="field"><label>Mood after</label>
-        <div class="chips" id="grp_ma">
-          <div class="chip" onclick="selChip(this,'grp_ma')">😔</div>
-          <div class="chip" onclick="selChip(this,'grp_ma')">😐</div>
-          <div class="chip" onclick="selChip(this,'grp_ma')">🙂</div>
-          <div class="chip" onclick="selChip(this,'grp_ma')">😊</div>
-        </div>
-      </div>
-    </div>
-    <div class="field"><label>What</label><input type="text" id="f_music_what"></div>
-    <button class="btnprimary" onclick="saveMusic()">💾 Save entry</button>
+    <button class="btn-log" onclick="document.getElementById('mu_overlay').classList.remove('hide');resetMusicModal()">🎵 Log music session</button>
     <div class="entries" id="music_entries"><div class="noentry">No entries yet</div></div>
   </div>
 </div>
@@ -429,19 +509,7 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 <div class="card">
   <div class="cardhead" onclick="tog('test')"><div class="cardtitle"><span class="dot" style="background:#95A5A6"></span>Test</div><div class="chev open" id="chev-test">▾</div></div>
   <div class="cardbody" id="body-test">
-    <div class="field">
-      <div class="chips" id="grp_priv">
-        <div class="chip on" onclick="selChip(this,'grp_priv')">M</div>
-        <div class="chip" onclick="selChip(this,'grp_priv')">T</div>
-        <div class="chip" onclick="selChip(this,'grp_priv')">Y</div>
-        <div class="chip" onclick="selChip(this,'grp_priv')">R</div>
-      </div>
-    </div>
-    <div class="g2">
-      <div class="field"><label>Time</label><div class="timefield" onclick="openTP('priv','Time',true,nowTime(),nowAMPM())"><span id="tfv_priv">–</span><span>🕐</span></div></div>
-      <div class="field"><label>Value</label><input type="number" id="f_priv_val" step="0.5"></div>
-    </div>
-    <button class="btnprimary" onclick="savePrivate()">💾 Save</button>
+    <button class="btn-log" onclick="document.getElementById('test_overlay').classList.remove('hide')">📊 Log entry</button>
     <div class="entries" id="private_entries"><div class="noentry">No entries yet</div></div>
   </div>
 </div>
@@ -450,11 +518,9 @@ input, textarea, select, button { font-size: var(--F) !important; font-family: i
 <div class="card">
   <div class="cardhead" onclick="tog('night')"><div class="cardtitle"><span class="dot" style="background:#9B59B6"></span>Night Routine</div><div class="chev open" id="chev-night">▾</div></div>
   <div class="cardbody" id="body-night">
-    <div class="chips" id="grp_night" style="margin-bottom:14px">
-      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">🍵 Chamomile tea</div>
-      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">🥜 Pista</div>
-      <div class="chip" onclick="togChip(this,'grp_night','Night routine done')">💡 Lights dimmed</div>
-    </div>
+    <div class="yn-row"><span class="yn-label">🍵 Chamomile tea</span><div class="yn-btns"><div class="yn-btn y" id="yn_cham_y" onclick="selYNid('yn_cham','Y','Chamomile tea')">Y</div><div class="yn-btn n" id="yn_cham_n" onclick="selYNid('yn_cham','N','Chamomile tea')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🥜 Pista</span><div class="yn-btns"><div class="yn-btn y" id="yn_pista_y" onclick="selYNid('yn_pista','Y','Pista')">Y</div><div class="yn-btn n" id="yn_pista_n" onclick="selYNid('yn_pista','N','Pista')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">💡 Lights dimmed</span><div class="yn-btns"><div class="yn-btn y" id="yn_lights_y" onclick="selYNid('yn_lights','Y','Lights dimmed')">Y</div><div class="yn-btn n" id="yn_lights_n" onclick="selYNid('yn_lights','N','Lights dimmed')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🪥 Brush at night</span><div class="yn-btns"><div class="yn-btn y" id="yn_brush_y" onclick="selYNid('yn_brush','Y','Brush at night')">Y</div><div class="yn-btn n" id="yn_brush_n" onclick="selYNid('yn_brush','N','Brush at night')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🧴 Face wash</span><div class="yn-btns"><div class="yn-btn y" id="yn_fw_y" onclick="selYNid('yn_fw','Y','Face wash')">Y</div><div class="yn-btn n" id="yn_fw_n" onclick="selYNid('yn_fw','N','Face wash')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🍽️ Food after 7pm</span><div class="yn-btns"><div class="yn-btn y" id="yn_f7_y" onclick="selYNid('yn_f7','Y','Food after 7pm')">Y</div><div class="yn-btn n" id="yn_f7_n" onclick="selYNid('yn_f7','N','Food after 7pm')">N</div></div></div>
@@ -510,54 +576,66 @@ let fdCat = 'Mid morning snack';
 let hmCat = 'Mood';
 let selMoodVal = '';
 let selLvlVal = 0;
+let musicMode = 'from';
+let musicFrom = '';
+let musicTo = '';
+let selWater = 0;
 const tpValues = {};
+let tpCallback = null;
 
 // ── TIME PICKER ───────────────────────────────────────────────
 let tpCur = { fieldId:'', showAMPM:false, h:12, m:0, am:true };
 
 function nowTime() {
+  // Use device local time directly — no IST conversion
   const now = new Date();
-  const ist = new Date(now.getTime()+(330+now.getTimezoneOffset())*60000);
-  return ist.toISOString().split('T')[1].slice(0,5);
+  return (now.getHours()<10?'0':'')+now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
 }
-function nowAMPM() { return parseInt(nowTime().split(':')[0])<12?'AM':'PM'; }
-function parseDefault(t24,forceAMPM) {
-  const [h24,m]=t24.split(':').map(Number);
-  const am=forceAMPM?forceAMPM==='AM':h24<12;
-  return {h:h24%12||12,m:Math.round(m/10)*10%60,am};
+function nowAMPM() { return new Date().getHours() < 12 ? 'AM' : 'PM'; }
+
+function parseDefault(t24, forceAMPM) {
+  const parts = t24.replace(/\s*(AM|PM)$/i,'').split(':');
+  const h24 = parseInt(parts[0]||0), m = parseInt(parts[1]||0);
+  const am = forceAMPM ? forceAMPM==='AM' : h24<12;
+  return { h: h24%12||12, m: Math.round(m/10)*10%60, am };
 }
-function fmt12(h,m,am){return h+':'+(m<10?'0':'')+m+' '+(am?'AM':'PM');}
-function fmt24(h,m,am){let h24=am?h%12:h%12+12;return(h24<10?'0':'')+h24+':'+(m<10?'0':'')+m;}
-function openTP(fid,label,showAMPM,defTime,forceAMPM){
-  const saved=tpValues[fid];
-  const def=saved?parseDefault(saved,null):parseDefault(defTime,forceAMPM);
-  tpCur={fieldId:fid,showAMPM,...def};
-  document.getElementById('tp_title').textContent=label;
-  document.getElementById('tp_ampm_row').classList.toggle('hide',!showAMPM);
+function fmt12(h,m,am) { return h+':'+(m<10?'0':'')+m+' '+(am?'AM':'PM'); }
+function fmt24(h,m,am) { let h24=am?h%12:h%12+12; return (h24<10?'0':'')+h24+':'+(m<10?'0':'')+m; }
+
+function openTP(fid, label, showAMPM, defTime, forceAMPM, cb) {
+  const saved = tpValues[fid];
+  const def = saved ? parseDefault(saved, null) : parseDefault(defTime, forceAMPM);
+  tpCur = { fieldId:fid, showAMPM, ...def };
+  tpCallback = cb || null;
+  document.getElementById('tp_title').textContent = label;
+  document.getElementById('tp_ampm_row').classList.toggle('hide', !showAMPM);
   tpRender();
   document.getElementById('tp_overlay').classList.remove('hide');
 }
-function openMealTP(){
+function openMealTP() {
   const d={Breakfast:['08:30','AM'],Lunch:['13:30','PM'],Dinner:['19:00','PM']}[mealType]||['12:00','PM'];
   openTP('meal',mealType+' time',false,d[0],d[1]);
 }
-function openFdTP(){
+function openFdTP() {
   const d={'Mid morning snack':['11:00','AM'],'Post lunch snack':['16:00','PM'],'Evening snack':['18:00','PM'],'After dinner snack':['20:00','PM']}[fdCat];
   openTP('fd',fdCat+' time',!d,d?d[0]:nowTime(),d?d[1]:nowAMPM());
 }
-function tpRender(){
-  document.getElementById('tp_h').textContent=tpCur.h;
-  document.getElementById('tp_m').textContent=tpCur.m<10?'0'+tpCur.m:tpCur.m;
-  document.getElementById('tp_display').textContent=fmt12(tpCur.h,tpCur.m,tpCur.am);
-  if(tpCur.showAMPM){document.getElementById('tp_am').classList.toggle('on',tpCur.am);document.getElementById('tp_pm').classList.toggle('on',!tpCur.am);}
+function tpRender() {
+  document.getElementById('tp_h').textContent = tpCur.h;
+  document.getElementById('tp_m').textContent = tpCur.m<10?'0'+tpCur.m:tpCur.m;
+  document.getElementById('tp_display').textContent = fmt12(tpCur.h,tpCur.m,tpCur.am);
+  if(tpCur.showAMPM){
+    document.getElementById('tp_am').classList.toggle('on',tpCur.am);
+    document.getElementById('tp_pm').classList.toggle('on',!tpCur.am);
+  }
 }
-function tpAdj(part,dir){
+function tpAdj(part,dir) {
   if(part==='h') tpCur.h=(tpCur.h-1+dir+12)%12+1;
   else tpCur.m=(tpCur.m+dir*10+60)%60;
   tpRender();
 }
 function tpSetAMPM(am){tpCur.am=am;tpRender();}
-function tpOK(){
+function tpOK() {
   const v24=fmt24(tpCur.h,tpCur.m,tpCur.am);
   const v12=fmt12(tpCur.h,tpCur.m,tpCur.am);
   tpValues[tpCur.fieldId]=v24;
@@ -565,24 +643,83 @@ function tpOK(){
   if(el) el.textContent=v12;
   const fm={wake:'Wake up time',slept:'Slept at',treadmill:'Treadmill time'};
   if(fm[tpCur.fieldId]){autoSave(fm[tpCur.fieldId],v24);if(tpCur.fieldId==='wake'||tpCur.fieldId==='slept') calcSleep();}
+  if(tpCallback) tpCallback(v24,v12);
   tpClose();
 }
 function tpClose(){document.getElementById('tp_overlay').classList.add('hide');}
 function tpOverlayClick(e){if(e.target===document.getElementById('tp_overlay')) tpClose();}
 function getTpVal(id){return tpValues[id]||'';}
 
+// ── WATER PICKER ──────────────────────────────────────────────
+function buildWaterPicker() {
+  const el = document.getElementById('water_picker');
+  const vals = [];
+  for(let v=0.25; v<=5; v=Math.round((v+0.25)*100)/100) vals.push(v);
+  el.innerHTML = vals.map(v=>
+    '<div class="water-chip'+(selWater===v?' on':'')+'" onclick="selectWater('+v+')">'+v+'L</div>'
+  ).join('');
+}
+function selectWater(v) {
+  selWater=v;
+  buildWaterPicker();
+  updateWbar(v);
+  autoSave('Water total (litres)',v);
+}
+
+// ── TREADMILL MODAL ───────────────────────────────────────────
+function openTreadmillModal() {
+  tpValues['tm'] = nowTime();
+  document.getElementById('tfv_tm').textContent = fmt12(...parseDefault(nowTime(),nowAMPM())?.[Symbol.iterator]?[]:[])||nowTime();
+  // Set display
+  const def = parseDefault(nowTime(), nowAMPM());
+  document.getElementById('tfv_tm').textContent = fmt12(def.h, def.m, def.am);
+  document.getElementById('tm_overlay').classList.remove('hide');
+}
+function saveTreadmill() {
+  const kms=document.getElementById('tm_kms').value;
+  const dur=document.getElementById('tm_dur').value;
+  const inc=document.getElementById('tm_inc').value;
+  const spd=document.getElementById('tm_spd').value;
+  const time=getTpVal('tm')||nowTime();
+  if(!kms){snack('Please enter distance');return;}
+  const saves={'Treadmill kms':kms,'Treadmill duration (mins)':dur,'Treadmill incline':inc,'Treadmill max speed':spd,'Treadmill time':time};
+  Object.entries(saves).forEach(([f,v])=>{if(v) apicall({action:'saveField',date:curDate,field:f,value:v},()=>{});});
+  document.getElementById('tm_overlay').classList.add('hide');
+  // Add to event log
+  const detail=kms+'km'+(dur?' '+dur+'min':'')+(inc?' incline:'+inc:'')+(spd?' spd:'+spd:'');
+  appendEvt(time,'Exercise',detail,'','',()=>{
+    document.getElementById('tm_kms').value='';
+    document.getElementById('tm_dur').value='';
+    document.getElementById('tm_inc').value='';
+    document.getElementById('tm_spd').value='';
+  });
+}
+
+// ── MUSIC MODAL ───────────────────────────────────────────────
+function resetMusicModal(){musicMode='from';musicFrom='';musicTo='';updateMusicDisplay();document.querySelectorAll('#mu_moods .moodbtn').forEach(b=>b.classList.remove('on'));document.getElementById('mu_from_btn').classList.add('on');document.getElementById('mu_to_btn').classList.remove('on');}
+function setMusicMode(mode){musicMode=mode;document.getElementById('mu_from_btn').classList.toggle('on',mode==='from');document.getElementById('mu_to_btn').classList.toggle('on',mode==='to');document.querySelectorAll('#mu_moods .moodbtn').forEach(b=>b.classList.remove('on'));}
+function selMusicMood(el,emoji,label){document.querySelectorAll('#mu_moods .moodbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');if(musicMode==='from'){musicFrom=emoji+' '+label;}else{musicTo=emoji+' '+label;}updateMusicDisplay();}
+function updateMusicDisplay(){document.getElementById('mu_display').textContent=(musicFrom||'–')+' → '+(musicTo||'–');}
+function saveMusic(){
+  const what=document.getElementById('mu_what').value;
+  const detail=(musicFrom?'Before: '+musicFrom:'')+(musicTo?' → After: '+musicTo:'')+(what?' · '+what:'');
+  appendEvt(nowTime(),'Music',detail,'','',()=>{document.getElementById('mu_what').value='';document.getElementById('mu_overlay').classList.add('hide');});
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
   buildDateSelector();
+  buildWaterPicker();
   tpValues['wake']='06:00';tpValues['slept']='23:30';tpValues['meal']='08:30';tpValues['fd']='11:00';
+  document.getElementById('tfv_wake').textContent='06:00 AM';
+  document.getElementById('tfv_slept').textContent='11:30 PM';
   if(new Date().getDay()!==0){document.getElementById('weekly_note').textContent='Log weight & waistline on Sundays';document.getElementById('weekly_card').style.opacity='0.5';}
   loadDay(curDate);
 });
 
 function todayStr(){
   const now=new Date();
-  const ist=new Date(now.getTime()+(330+now.getTimezoneOffset())*60000);
-  return ist.toISOString().split('T')[0];
+  return now.getFullYear()+'-'+(now.getMonth()<9?'0':'')+(now.getMonth()+1)+'-'+(now.getDate()<10?'0':'')+now.getDate();
 }
 function buildDateSelector(){
   const sel=document.getElementById('dateSelect');
@@ -591,11 +728,10 @@ function buildDateSelector(){
   const days=Math.ceil((today-start)/86400000);
   for(let i=0;i<=days;i++){
     const d=new Date(today);d.setDate(today.getDate()-i);
-    const str=d.toISOString().split('T')[0];
+    const str=d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
     if(str<START_DATE) break;
     const lbl=i===0?'Today':i===1?'Yesterday':d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
-    const opt=document.createElement('option');
-    opt.value=str;opt.textContent=lbl;
+    const opt=document.createElement('option');opt.value=str;opt.textContent=lbl;
     if(str===curDate) opt.selected=true;
     sel.appendChild(opt);
   }
@@ -624,22 +760,24 @@ function appendEvt(time,cat,detail,numVal,moodScore,cb){
 function loadDay(dateStr){
   apicall({action:'getRow',date:dateStr},res=>{if(res.success) populateFields(JSON.parse(res.data));});
   apicall({action:'getEvents',date:dateStr},res=>{if(res.success) populateEvents(JSON.parse(res.data));});
-  const yd=new Date(dateStr+'T12:00:00');yd.setDate(yd.getDate()-1);
-  apicall({action:'getRow',date:yd.toISOString().split('T')[0]},res=>{
+  // Yesterday's slept at
+  const d=new Date(dateStr+'T12:00:00');d.setDate(d.getDate()-1);
+  const ydStr=d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+  apicall({action:'getRow',date:ydStr},res=>{
     if(res.success){
-      const d=JSON.parse(res.data);
-      const s=d['Slept at']||'';
+      const row=JSON.parse(res.data);
+      const s=row['Slept at']||'';
       document.getElementById('slept_last_display').textContent=s?fmtDisp(s):'–';
-      window._ydSlept=s;
-      calcSleep();
+      window._ydSlept=s;calcSleep();
     }
   });
 }
 
 function fmtDisp(t){
-  if(!t||!t.includes(':')) return t||'–';
-  // Already 24h HH:MM
-  const [h,m]=t.replace(/\s*(AM|PM)$/i,'').split(':').map(Number);
+  if(!t) return '–';
+  const clean=t.toString().replace(/\s*(AM|PM)$/i,'').trim();
+  if(!clean.includes(':')) return t;
+  const[h,m]=clean.split(':').map(Number);
   const am=h<12;const h12=h%12||12;
   return h12+':'+(m<10?'0':'')+m+' '+(am?'AM':'PM');
 }
@@ -648,6 +786,7 @@ function populateFields(d){
   const setTP=(fid,col,dispId)=>{
     const v=d[col];if(!v) return;
     const clean=v.toString().replace(/\s*(AM|PM)$/i,'').trim();
+    if(!clean.includes(':')) return;
     tpValues[fid]=clean;
     const el=document.getElementById(dispId);
     if(el) el.textContent=fmtDisp(clean);
@@ -656,48 +795,57 @@ function populateFields(d){
   setTP('slept','Slept at','tfv_slept');
   setTP('treadmill','Treadmill time','tfv_treadmill');
   setF('f_t_kms',d['Treadmill kms']);
-  setF('f_t_dur',d['Treadmill duration (mins)']);
-  setF('f_t_inc',d['Treadmill incline']);
-  setF('f_t_spd',d['Treadmill max speed']);
-  setF('f_water',d['Water total (litres)']);
   setF('f_weight',d['Weight (kg)']);
   setF('f_waist',d['Waistline (cm)']);
-  if(d['Water total (litres)']) updateWbar(d['Water total (litres)']);
+
+  // Water
+  const wv=parseFloat(d['Water total (litres)']||0);
+  if(wv>0){selWater=wv;buildWaterPicker();updateWbar(wv);}
+
   if(d['Hours of sleep']) updateSleepDisplay(d['Hours of sleep']);
 
-  // Restore Y/N fields
+  // Water on waking
+  const ww=d['Water after waking (glasses)'];
+  if(ww){
+    document.querySelectorAll('#grp_water_waking .chip').forEach(c=>{
+      if(c.textContent.includes(ww+' glass')) c.classList.add('on');
+    });
+  }
+
+  // Y/N fields — only restore if value is explicitly Yes or No
   const ynMap={
+    'Lukewarm water':'yn_lw','CCF tea':'yn_ccf','Almonds+Walnuts':'yn_aw','7min walk':'yn_7w',
     'Shaved':'yn_shaved','Dress up well':'yn_dressed','Sunlight':'yn_sun',
     'Housekeeping':'yn_hk','Gratitude':'yn_grat','Brush at night':'yn_brush',
-    'Face wash':'yn_fw','Food after 7pm':'yn_f7'
+    'Face wash':'yn_fw','Food after 7pm':'yn_f7',
+    'Chamomile tea':'yn_cham','Pista':'yn_pista','Lights dimmed':'yn_lights'
   };
   Object.entries(ynMap).forEach(([col,prefix])=>{
     const v=d[col];
-    if(v==='Yes') { const y=document.getElementById(prefix+'_y'); if(y){y.classList.add('on');} }
-    else if(v==='No') { const n=document.getElementById(prefix+'_n'); if(n){n.classList.add('on');} }
+    if(v==='Yes'||v===true||v==='TRUE') setYNid(prefix,'Y');
+    else if(v==='No'||v===false||v==='FALSE') setYNid(prefix,'N');
+    // If empty/undefined — don't set either button
   });
 
-  // Restore morning routine chips-turned-yn
-  const mr=d['Morning routine done']||'';
-  if(mr.includes('Lukewarm')) restoreYNid('yn_lw','Y');
-  if(mr.includes('CCF')) restoreYNid('yn_ccf','Y');
-  if(mr.includes('Almonds')) restoreYNid('yn_aw','Y');
-  if(mr.includes('7min')) restoreYNid('yn_7w','Y');
-
-  restoreChips('grp_night',d['Night routine done']);
   checkMandatory();
 }
 
-function restoreYNid(prefix,val){
-  const el=document.getElementById(prefix+'_'+(val==='Y'?'y':'n'));
-  if(el) el.classList.add('on');
+function setYNid(prefix,val){
+  const y=document.getElementById(prefix+'_y');
+  const n=document.getElementById(prefix+'_n');
+  if(y) y.classList.remove('on');
+  if(n) n.classList.remove('on');
+  if(val==='Y'&&y) y.classList.add('on');
+  if(val==='N'&&n) n.classList.add('on');
 }
 
 function populateEvents(events){
   const bycat=cats=>events.filter(e=>cats.includes(e.Category));
+  const tmEvents=events.filter(e=>e.Category==='Exercise'&&String(e.Detail||'').includes('km'));
+  renderEntries('treadmill_entries',tmEvents);
   renderEntries('meal_entries',bycat(['Breakfast','Lunch','Dinner']));
   renderEntries('fd_entries',bycat(['Mid morning snack','Post lunch snack','Evening snack','After dinner snack','Coffee','Junk/Sugar','Alcohol','Thumbs Up']));
-  renderEntries('hm_entries',bycat(['Mood','Stress','Energy','Exercise','Headache','Note']));
+  renderEntries('hm_entries',bycat(['Mood','Stress','Energy','Headache','Note']).concat(events.filter(e=>e.Category==='Exercise'&&!String(e.Detail||'').includes('km'))));
   renderEntries('music_entries',bycat(['Music']));
   renderEntries('reflect_entries',bycat(['Reflection']));
   renderEntries('private_entries',events.filter(e=>e.Category&&(e.Category.startsWith('Test-')||e.Category.startsWith('Private-'))));
@@ -712,34 +860,53 @@ function renderEntries(id,entries){
     '</tbody></table>';
 }
 
+// ── SCORING ───────────────────────────────────────────────────
 function calcScore(events){
   const wake=getTpVal('wake');
-  const water=parseFloat(document.getElementById('f_water').value||0);
-  const tkms=parseFloat(document.getElementById('f_t_kms').value||0);
+  const water=selWater;
   const sleepH=parseFloat((document.getElementById('sleep_hrs_display').textContent||'').replace('h',''))||0;
-  let sc=0;
+  const hasMood2pm=events.some(e=>e.Category==='Mood'&&String(e.Time||'')>='13:00'&&String(e.Time||'')<='15:00'&&['Happy','Good','Motivated','Relaxed'].some(m=>String(e.Detail||'').includes(m)));
+  const hasEvEx=events.some(e=>e.Category==='Exercise');
+  const hasNoJunk=!events.some(e=>e.Category==='Junk/Sugar');
+
+  let sc=0, bonus=0;
   if(wake&&wake<='06:00') sc++;
   if(water>=2.5) sc++;
-  if(tkms>=2) sc++;
   if(sleepH>=7) sc++;
-  if(events.some(e=>e.Category==='Exercise')) sc++;
+  if(hasMood2pm) sc++;
+  if(hasEvEx) sc++;
+  if(hasNoJunk) sc++;
+  // Treadmill
+  const tmKms=parseFloat(events.filter(e=>e.Category==='Exercise'&&String(e.Detail||'').includes('km')).map(e=>{const m=String(e.Detail||'').match(/([\d.]+)km/);return m?parseFloat(m[1]):0;}).reduce((a,b)=>a+b,0)||0);
+  if(tmKms>=2) sc++;
+
+  // Brownie
+  if(events.some(e=>e.Category==='Reflection')) bonus++;
+  if(events.some(e=>e.Category==='Music')) bonus++;
+
+  document.getElementById('s_score').textContent=sc;
+  document.getElementById('s_bonus').textContent=bonus;
+  document.getElementById('s_sleep').textContent=sleepH>0?sleepH.toFixed(1):'–';
 }
 
+// ── SLEEP ─────────────────────────────────────────────────────
 function calcSleep(){
   const wake=getTpVal('wake');const slept=window._ydSlept||'';
   if(!wake||!slept) return;
-  const wClean=wake.replace(/\s*(AM|PM)$/i,'');
-  const sClean=slept.replace(/\s*(AM|PM)$/i,'');
-  let wm=toMin(wClean),sm=toMin(sClean);
+  const wc=wake.replace(/\s*(AM|PM)$/i,'');
+  const sc=slept.replace(/\s*(AM|PM)$/i,'');
+  if(!wc.includes(':')||!sc.includes(':')) return;
+  let wm=toMin(wc),sm=toMin(sc);
   let diff=wm-sm;if(diff<0) diff+=1440;
-  if(diff>0&&diff<24*60){updateSleepDisplay(diff/60);autoSave('Hours of sleep',(diff/60).toFixed(2));}
+  if(diff>0&&diff<20*60){updateSleepDisplay(diff/60);autoSave('Hours of sleep',(diff/60).toFixed(2));}
 }
-function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+(m||0);}
 function updateSleepDisplay(h){
   h=parseFloat(h);if(isNaN(h)||h<=0) return;
   const el=document.getElementById('sleep_hrs_display');
   el.textContent=h.toFixed(1)+'h';
   el.style.color=h>=7?'var(--green)':h>=6?'var(--primary)':'var(--amber)';
+  document.getElementById('s_sleep').textContent=h.toFixed(1);
 }
 function updateWbar(val){
   const v=parseFloat(val)||0;const pct=Math.min(v/2.5*100,100);
@@ -748,41 +915,20 @@ function updateWbar(val){
   document.getElementById('wbar_lbl').textContent=v+'L / 2.5L';
 }
 
+// ── MANDATORY ─────────────────────────────────────────────────
 function checkMandatory(){
   const today=todayStr();
-  const tmr=new Date(today+'T12:00:00');tmr.setDate(tmr.getDate()+1);
-  const tmrStr=tmr.toISOString().split('T')[0];
-  const relevant=curDate===today||curDate===tmrStr;
-  const checks={fw_wake:()=>!!getTpVal('wake'),fw_water:()=>!!document.getElementById('f_water').value,fw_tkms:()=>!!document.getElementById('f_t_kms').value,fw_slept:()=>!!getTpVal('slept')};
-  Object.entries(checks).forEach(([id,fn])=>{const el=document.getElementById(id);if(el) el.classList.toggle('missing',relevant&&!fn());});
+  const tmr=new Date();tmr.setDate(tmr.getDate()+1);
+  const tmrStr=tmr.getFullYear()+'-'+(tmr.getMonth()<9?'0':'')+(tmr.getMonth()+1)+'-'+(tmr.getDate()<10?'0':'')+tmr.getDate();
+  const rel=curDate===today||curDate===tmrStr;
+  const checks={fw_wake:()=>!!getTpVal('wake'),fw_water:()=>selWater>0,fw_slept:()=>!!getTpVal('slept')};
+  Object.entries(checks).forEach(([id,fn])=>{const el=document.getElementById(id);if(el) el.classList.toggle('missing',rel&&!fn());});
 }
 
-// ── Y/N HANDLERS ─────────────────────────────────────────────
-function selYN(el,prefix,val,field){
-  // el is the button clicked
-  const y=el.closest('.yn-btns').querySelector('.yn-btn.y');
-  const n=el.closest('.yn-btns').querySelector('.yn-btn.n');
-  y.classList.remove('on');n.classList.remove('on');
-  el.classList.add('on');
-  if(field) autoSave(field,val==='Y'?'Yes':'No');
-}
+// ── Y/N ───────────────────────────────────────────────────────
 function selYNid(prefix,val,field){
-  const y=document.getElementById(prefix+'_y');
-  const n=document.getElementById(prefix+'_n');
-  if(y) y.classList.remove('on');
-  if(n) n.classList.remove('on');
-  const target=document.getElementById(prefix+'_'+(val==='Y'?'y':'n'));
-  if(target) target.classList.add('on');
+  setYNid(prefix,val);
   if(field) autoSave(field,val==='Y'?'Yes':'No');
-}
-
-function getMorningRoutineSummary(){
-  const items=[];
-  if(document.getElementById('yn_lw_y').classList.contains('on')) items.push('Lukewarm water');
-  if(document.getElementById('yn_ccf_y').classList.contains('on')) items.push('CCF tea');
-  if(document.getElementById('yn_aw_y').classList.contains('on')) items.push('Almonds+Walnuts');
-  if(document.getElementById('yn_7w_y').classList.contains('on')) items.push('7min walk');
-  return items.join(', ');
 }
 
 // ── SAVES ─────────────────────────────────────────────────────
@@ -799,15 +945,15 @@ function saveMeal(){
   else if(mealType==='Lunch'){saves['Lunch time']=time;saves['Lunch description']=desc;saves['Lunch pre ginger']=document.getElementById('yn_plg_y').classList.contains('on')?'Yes':'No';saves['Lunch cucumber salad']=document.getElementById('yn_cuke_y').classList.contains('on')?'Yes':'No';saves['Lunch post walk']=document.getElementById('yn_plw_y').classList.contains('on')?'Yes':'No';saves['Lunch ate slowly']=ateS?'Yes':'No';}
   else if(mealType==='Dinner'){saves['Dinner time']=time;saves['Dinner description']=desc;saves['Dinner pre ginger']=document.getElementById('yn_pdg_y').classList.contains('on')?'Yes':'No';saves['Dinner post walk']=document.getElementById('yn_pdw_y').classList.contains('on')?'Yes':'No';saves['Dinner ate slowly']=ateS?'Yes':'No';}
   Object.entries(saves).forEach(([f,v])=>apicall({action:'saveField',date:curDate,field:f,value:v},()=>{}));
-  // Save morning routine summary
-  autoSave('Morning routine done', getMorningRoutineSummary());
   appendEvt(time,mealType,detail,'','',()=>{document.getElementById('f_meal_desc').value='';});
 }
+
 function saveFD(){
   const time=getTpVal('fd');let detail=document.getElementById('f_fd_detail').value;
   if(fdCat==='Coffee'){const n=document.getElementById('f_coffee_n').value||'1';const types=getChecked('grp_coffee_type');detail=n+' coffee'+(types.length?'('+types.join('+')+')':'')+(detail?' · '+detail:'');}
   appendEvt(time,fdCat,detail,'','',()=>{document.getElementById('f_fd_detail').value='';});
 }
+
 function saveHM(){
   const time=getTpVal('hm')||nowTime();const note=document.getElementById('f_hm_note').value;
   let detail=note,ms='';
@@ -819,20 +965,16 @@ function saveHM(){
     document.querySelectorAll('.lvlbtn').forEach(l=>l.classList.remove('on'));
   });
 }
-function saveMusic(){
-  const time=getTpVal('music')||nowTime();const what=document.getElementById('f_music_what').value;
-  const before=getSel('grp_mb'),after=getSel('grp_ma');
-  const detail=(before?'Before: '+before:'')+(after?' → After: '+after:'')+(what?' · '+what:'');
-  appendEvt(time,'Music',detail,'','',()=>{document.getElementById('f_music_what').value='';});
-}
+
 function saveReflect(){
   const cat=getSel('grp_reflect')||'Story moment';const detail=document.getElementById('f_reflect_detail').value;
   if(!detail){snack('Please enter a detail');return;}
   appendEvt(nowTime(),'Reflection',cat+': '+detail,'','',()=>{document.getElementById('f_reflect_detail').value='';});
 }
+
 function savePrivate(){
-  const cat=getSel('grp_priv')||'M';const time=getTpVal('priv')||nowTime();const val=document.getElementById('f_priv_val').value;
-  appendEvt(time,'Test-'+cat,'',val,'',()=>{document.getElementById('f_priv_val').value='';});
+  const cat=getSel('grp_priv')||'M';const val=document.getElementById('f_priv_val').value;
+  appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{document.getElementById('f_priv_val').value='';document.getElementById('test_overlay').classList.add('hide');});
 }
 
 // ── UI HELPERS ────────────────────────────────────────────────
@@ -853,17 +995,12 @@ function selHmCat(el,cat){
   if(cat==='Stress') document.getElementById('lvl_lbl').textContent='Stress level (1=Low 5=High)';
   if(cat==='Energy') document.getElementById('lvl_lbl').textContent='Energy level (1=Drained 5=High)';
 }
-function selMood(el,mood){document.querySelectorAll('.moodbtn').forEach(m=>m.classList.remove('on'));el.classList.add('on');selMoodVal=mood;}
+function selMood(el,mood){document.querySelectorAll('#body-hm .moodbtn').forEach(m=>m.classList.remove('on'));el.classList.add('on');selMoodVal=mood;}
 function selLvl(el,lvl){document.querySelectorAll('.lvlbtn').forEach(l=>l.classList.remove('on'));el.classList.add('on');selLvlVal=lvl;}
 function moodScoreVal(m){return{Happy:5,Good:4,Relaxed:4,Motivated:5,Neutral:3,Tired:2,Low:1,Angry:2}[m]||'';}
 function getChecked(gid){return Array.from(document.querySelectorAll('#'+gid+' .chip.on')).map(c=>c.textContent.trim());}
 function getSel(gid){const e=document.querySelector('#'+gid+' .chip.on');return e?e.textContent.trim():'';}
 function setF(id,val){const e=document.getElementById(id);if(e&&val!==undefined&&val!==null&&val!=='') e.value=val;}
-function restoreChips(gid,val){
-  if(!val) return;
-  const items=val.toString().split(',').map(s=>s.trim());
-  document.querySelectorAll('#'+gid+' .chip').forEach(c=>{if(items.some(i=>c.textContent.trim().includes(i)||i.includes(c.textContent.trim()))) c.classList.add('on');});
-}
 function snack(msg){const e=document.getElementById('snack');e.textContent=msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500);}
 
 function showPage(p){
@@ -872,6 +1009,7 @@ function showPage(p){
   document.getElementById('page-'+p).classList.add('on');
   document.getElementById('nav-'+p).classList.add('on');
   document.getElementById('dateSelect').style.display=p==='log'?'':'none';
+  document.getElementById('scorestrip').style.display=p==='log'?'flex':'none';
   if(p==='history') loadHistory();
 }
 
@@ -879,12 +1017,15 @@ function loadHistory(){
   const el=document.getElementById('history_content');
   el.innerHTML='<div class="loading">Loading...</div>';
   const today=todayStr();
-  const tmr=new Date(today+'T12:00:00');tmr.setDate(tmr.getDate()+1);
-  const tmrStr=tmr.toISOString().split('T')[0];
+  const tmr=new Date();tmr.setDate(tmr.getDate()+1);
+  const tmrStr=tmr.getFullYear()+'-'+(tmr.getMonth()<9?'0':'')+(tmr.getMonth()+1)+'-'+(tmr.getDate()<10?'0':'')+tmr.getDate();
   const start=new Date(START_DATE+'T12:00:00');
-  const end=new Date(today+'T12:00:00');
+  const end=new Date();
   const allDates=[];
-  for(let d=new Date(end);d>=start;d.setDate(d.getDate()-1)) allDates.push(d.toISOString().split('T')[0]);
+  for(let d=new Date(end);d>=start;d.setDate(d.getDate()-1)){
+    const str=d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+    allDates.push(str);
+  }
   apicall({action:'getDates'},res=>{
     const withData=new Set(res.success?JSON.parse(res.dates):[]);
     el.innerHTML=allDates.map(d=>{
