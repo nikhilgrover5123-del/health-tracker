@@ -324,10 +324,10 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="yn-btn" id="yn_ww_2" onclick="selWW(2)" style="min-width:34px">2</div>
       </div>
     </div>
-    <div class="yn-row"><span class="yn-label">💧 Lukewarm water</span><div class="yn-btns"><div class="yn-btn y" id="yn_lw_y" onclick="selYNid('yn_lw','Y')">Y</div><div class="yn-btn n" id="yn_lw_n" onclick="selYNid('yn_lw','N')">N</div></div></div>
-    <div class="yn-row"><span class="yn-label">🌿 CCF tea</span><div class="yn-btns"><div class="yn-btn y" id="yn_ccf_y" onclick="selYNid('yn_ccf','Y')">Y</div><div class="yn-btn n" id="yn_ccf_n" onclick="selYNid('yn_ccf','N')">N</div></div></div>
-    <div class="yn-row"><span class="yn-label">🥜 Almonds+Walnuts</span><div class="yn-btns"><div class="yn-btn y" id="yn_aw_y" onclick="selYNid('yn_aw','Y')">Y</div><div class="yn-btn n" id="yn_aw_n" onclick="selYNid('yn_aw','N')">N</div></div></div>
-    <div class="yn-row"><span class="yn-label">🚶 7min walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_7w_y" onclick="selYNid('yn_7w','Y')">Y</div><div class="yn-btn n" id="yn_7w_n" onclick="selYNid('yn_7w','N')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">💧 Lukewarm water</span><div class="yn-btns"><div class="yn-btn y" id="yn_lw_y" onclick="selYNid('yn_lw','Y');autoSave('Lukewarm water','Yes')">Y</div><div class="yn-btn n" id="yn_lw_n" onclick="selYNid('yn_lw','N');autoSave('Lukewarm water','No')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🌿 CCF tea</span><div class="yn-btns"><div class="yn-btn y" id="yn_ccf_y" onclick="selYNid('yn_ccf','Y');autoSave('CCF tea','Yes')">Y</div><div class="yn-btn n" id="yn_ccf_n" onclick="selYNid('yn_ccf','N');autoSave('CCF tea','No')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🥜 Almonds+Walnuts</span><div class="yn-btns"><div class="yn-btn y" id="yn_aw_y" onclick="selYNid('yn_aw','Y');autoSave('Almonds+Walnuts','Yes')">Y</div><div class="yn-btn n" id="yn_aw_n" onclick="selYNid('yn_aw','N');autoSave('Almonds+Walnuts','No')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🚶 7min walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_7w_y" onclick="selYNid('yn_7w','Y');autoSave('7min walk','Yes')">Y</div><div class="yn-btn n" id="yn_7w_n" onclick="selYNid('yn_7w','N');autoSave('7min walk','No')">N</div></div></div>
 
   </div>
 </div>
@@ -370,7 +370,7 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
       <div class="field" style="display:flex;align-items:flex-end">
         <div style="width:100%">
           <div style="font-size:13px;color:var(--text2);margin-bottom:4px">🐢 Ate slowly</div>
-          <div class="yn-btns"><div class="yn-btn y" id="yn_ats_y" onclick="selYNid('yn_ats','Y')">Y</div><div class="yn-btn n" id="yn_ats_n" onclick="selYNid('yn_ats','N')">N</div></div>
+          <div class="yn-btns"><div class="yn-btn y" id="yn_ats_y" onclick="selYNid('yn_ats','Y');autoSave('Breakfast ate slowly','Yes')">Y</div><div class="yn-btn n" id="yn_ats_n" onclick="selYNid('yn_ats','N');autoSave('Breakfast ate slowly','No')">N</div></div>
         </div>
       </div>
     </div>
@@ -388,16 +388,16 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
       </div>
     </div>
     <div class="cond" id="cond_lunch">
-      <div class="yn-row"><span class="yn-label">🫚 Pre-lunch ginger</span><div class="yn-btns"><div class="yn-btn y" id="yn_plg_y" onclick="selYNid('yn_plg','Y')">Y</div><div class="yn-btn n" id="yn_plg_n" onclick="selYNid('yn_plg','N')">N</div></div></div>
-      <div class="yn-row"><span class="yn-label">🥒 Cucumber salad</span><div class="yn-btns"><div class="yn-btn y" id="yn_cuke_y" onclick="selYNid('yn_cuke','Y')">Y</div><div class="yn-btn n" id="yn_cuke_n" onclick="selYNid('yn_cuke','N')">N</div></div></div>
-      <div class="yn-row"><span class="yn-label">🚶 Post-lunch walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_plw_y" onclick="selYNid('yn_plw','Y')">Y</div><div class="yn-btn n" id="yn_plw_n" onclick="selYNid('yn_plw','N')">N</div></div></div>
+      <div class="yn-row"><span class="yn-label">🫚 Pre-lunch ginger</span><div class="yn-btns"><div class="yn-btn y" id="yn_plg_y" onclick="selYNid('yn_plg','Y');autoSave('Lunch pre ginger','Yes')">Y</div><div class="yn-btn n" id="yn_plg_n" onclick="selYNid('yn_plg','N');autoSave('Lunch pre ginger','No')">N</div></div></div>
+      <div class="yn-row"><span class="yn-label">🥒 Cucumber salad</span><div class="yn-btns"><div class="yn-btn y" id="yn_cuke_y" onclick="selYNid('yn_cuke','Y');autoSave('Lunch cucumber salad','Yes')">Y</div><div class="yn-btn n" id="yn_cuke_n" onclick="selYNid('yn_cuke','N');autoSave('Lunch cucumber salad','No')">N</div></div></div>
+      <div class="yn-row"><span class="yn-label">🚶 Post-lunch walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_plw_y" onclick="selYNid('yn_plw','Y');autoSave('Lunch post walk','Yes')">Y</div><div class="yn-btn n" id="yn_plw_n" onclick="selYNid('yn_plw','N');autoSave('Lunch post walk','No')">N</div></div></div>
       <div class="chips" style="margin-top:6px">
         <div class="chip" id="os_lunch" onclick="this.classList.toggle('on')">🏠 O/S</div>
       </div>
     </div>
     <div class="cond" id="cond_dinner">
-      <div class="yn-row"><span class="yn-label">🫚 Pre-dinner ginger</span><div class="yn-btns"><div class="yn-btn y" id="yn_pdg_y" onclick="selYNid('yn_pdg','Y')">Y</div><div class="yn-btn n" id="yn_pdg_n" onclick="selYNid('yn_pdg','N')">N</div></div></div>
-      <div class="yn-row"><span class="yn-label">🚶 Post-dinner walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_pdw_y" onclick="selYNid('yn_pdw','Y')">Y</div><div class="yn-btn n" id="yn_pdw_n" onclick="selYNid('yn_pdw','N')">N</div></div></div>
+      <div class="yn-row"><span class="yn-label">🫚 Pre-dinner ginger</span><div class="yn-btns"><div class="yn-btn y" id="yn_pdg_y" onclick="selYNid('yn_pdg','Y');autoSave('Dinner pre ginger','Yes')">Y</div><div class="yn-btn n" id="yn_pdg_n" onclick="selYNid('yn_pdg','N');autoSave('Dinner pre ginger','No')">N</div></div></div>
+      <div class="yn-row"><span class="yn-label">🚶 Post-dinner walk</span><div class="yn-btns"><div class="yn-btn y" id="yn_pdw_y" onclick="selYNid('yn_pdw','Y');autoSave('Dinner post walk','Yes')">Y</div><div class="yn-btn n" id="yn_pdw_n" onclick="selYNid('yn_pdw','N');autoSave('Dinner post walk','No')">N</div></div></div>
       <div class="chips" style="margin-top:6px">
         <div class="chip" id="os_dinner" onclick="this.classList.toggle('on')">🏠 O/S</div>
       </div>
@@ -416,12 +416,11 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip on" onclick="selFdCat(this,'Mid morning snack')">Mid morning</div>
         <div class="chip" onclick="selFdCat(this,'Post lunch snack')">Post lunch</div>
         <div class="chip" onclick="selFdCat(this,'Evening snack')">Evening</div>
-        <div class="chip" onclick="selFdCat(this,'After dinner snack')">After dinner</div>
         <div class="chip" onclick="selFdCat(this,'Coffee')">☕ Coffee</div>
+        <div class="chip" onclick="selFdCat(this,'After dinner snack')">After dinner</div>
         <div class="chip" onclick="selFdCat(this,'Junk/Sugar')">🍭 Junk/Sugar</div>
         <div class="chip" onclick="selFdCat(this,'Alcohol')">🍺 Alcohol</div>
         <div class="chip" onclick="selFdCat(this,'Thumbs Up')">👍 Thumbs Up</div>
-        <div class="chip" onclick="selFdCat(this,'From outside')">🏠 O/S</div>
       </div>
     </div>
     <div class="g2">
@@ -589,8 +588,8 @@ let tpFieldSave=null; // field name to autoSave on OK
 let isSavingMusic=false;
 
 // TIME PICKER -----------------------------------------------
-function nowTime(){const n=new Date();return(n.getHours()<10?'0':'')+n.getHours()+':'+(n.getMinutes()<10?'0':'')+n.getMinutes();}
-function nowAMPM(){return new Date().getHours()<12?'AM':'PM';}
+function nowTime(){const n=new Date();const u=new Date(n.getTime()+((240+n.getTimezoneOffset())*60000));return(u.getHours()<10?'0':'')+u.getHours()+':'+(u.getMinutes()<10?'0':'')+u.getMinutes();}
+function nowAMPM(){const n=new Date();const u=new Date(n.getTime()+((240+n.getTimezoneOffset())*60000));return u.getHours()<12?'AM':'PM';}
 function fmt12(h,m,am){return h+':'+(m<10?'0':'')+m+' '+(am?'AM':'PM');}
 function fmt24(h,m,am){let h24=am?h%12:h%12+12;return(h24<10?'0':'')+h24+':'+(m<10?'0':'')+m;}
 
@@ -751,7 +750,7 @@ window.addEventListener('load',()=>{
   loadDay(curDate);
 });
 
-function todayStr(){const n=new Date();return n.getFullYear()+'-'+(n.getMonth()<9?'0':'')+(n.getMonth()+1)+'-'+(n.getDate()<10?'0':'')+n.getDate();}
+function todayStr(){const n=new Date();const u=new Date(n.getTime()+((240+n.getTimezoneOffset())*60000));return u.getFullYear()+'-'+(u.getMonth()<9?'0':'')+(u.getMonth()+1)+'-'+(u.getDate()<10?'0':'')+u.getDate();}
 
 function buildDateSelector(){
   const sel=document.getElementById('dateSelect');
@@ -962,8 +961,11 @@ function checkMandatory(){
 
 // Y/N -------------------------------------------------------
 function selWW(val){
-  document.getElementById('yn_ww_1').classList.toggle('on', val===1);
-  document.getElementById('yn_ww_2').classList.toggle('on', val===2);
+  val=parseInt(val);
+  const e1=document.getElementById('yn_ww_1');
+  const e2=document.getElementById('yn_ww_2');
+  if(e1) e1.classList.toggle('on', val===1);
+  if(e2) e2.classList.toggle('on', val===2);
   autoSave('Water after waking (glasses)', val);
 }
 
@@ -1043,9 +1045,12 @@ function saveReflect(){
   appendEvt(nowTime(),'Reflection',cat+': '+detail,'','',()=>{document.getElementById('f_reflect_detail').value='';});
 }
 
+let isSavingPrivate=false;
 function savePrivate(){
+  if(isSavingPrivate) return;
+  isSavingPrivate=true;
   const cat=getSel('grp_priv')||'M';const val=document.getElementById('f_priv_val').value;
-  appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{document.getElementById('f_priv_val').value='';closeModal('test_overlay');});
+  appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{document.getElementById('f_priv_val').value='';closeModal('test_overlay');isSavingPrivate=false;});
 }
 
 // UI HELPERS ------------------------------------------------
