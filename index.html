@@ -421,6 +421,7 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip" onclick="selFdCat(this,'Junk/Sugar')">🍭 Junk/Sugar</div>
         <div class="chip" onclick="selFdCat(this,'Alcohol')">🍺 Alcohol</div>
         <div class="chip" onclick="selFdCat(this,'Thumbs Up')">👍 Thumbs Up</div>
+        <div class="chip" onclick="selFdCat(this,'From outside')">🏠 O/S</div>
       </div>
     </div>
     <div class="g2">
@@ -659,7 +660,7 @@ function buildWaterPicker(){
   const el=document.getElementById('water_picker');
   const vals=[];
   for(let v=0.25;v<=5.01;v=Math.round((v+0.25)*100)/100) vals.push(v);
-  el.innerHTML=vals.map(v=>'<div class="wchip'+(_water===v?' on':'')+'" onclick="pickWater('+v+')">'+(Number.isInteger(v)?v:v)+'L</div>').join('');
+  el.innerHTML=vals.map(v=>'<div class="wchip'+(window._water===v?' on':'')+'" onclick="pickWater('+v+')">'+(Number.isInteger(v)?v:v)+'L</div>').join('');
 }
 function pickWater(v){
   window._water=v; // override function with value
