@@ -588,7 +588,7 @@ let tpCur={fid:'',showAMPM:false,h:6,m:0,am:true};
 let tpFieldSave=null; // field name to autoSave on OK
 let isSavingMusic=false;
 
-// ── TIME PICKER ───────────────────────────────────────────────
+// TIME PICKER -----------------------------------------------
 function nowTime(){const n=new Date();return(n.getHours()<10?'0':'')+n.getHours()+':'+(n.getMinutes()<10?'0':'')+n.getMinutes();}
 function nowAMPM(){return new Date().getHours()<12?'AM':'PM';}
 function fmt12(h,m,am){return h+':'+(m<10?'0':'')+m+' '+(am?'AM':'PM');}
@@ -655,7 +655,7 @@ function openFdTP(){
   openTP('fd',fdCat+' time',!d,d?d[0]:nowTime(),d?d[1]:nowAMPM());
 }
 
-// ── WATER PICKER ──────────────────────────────────────────────
+// WATER PICKER ----------------------------------------------
 function buildWaterPicker(){
   const el=document.getElementById('water_picker');
   const vals=[];
@@ -669,11 +669,11 @@ function pickWater(v){
   autoSave('Water total (litres)',v);
 }
 
-// ── MODAL HELPERS ─────────────────────────────────────────────
+// MODAL HELPERS ---------------------------------------------
 function openModal(id){document.getElementById(id).classList.remove('hide');}
 function closeModal(id){document.getElementById(id).classList.add('hide');}
 
-// ── TREADMILL MODAL ───────────────────────────────────────────
+// TREADMILL MODAL -------------------------------------------
 function openTreadmillModal(){
   const def=parseT(nowTime());
   document.getElementById('tfv_tm').textContent=fmt12(def.h,def.m,def.am);
@@ -696,7 +696,7 @@ function saveTreadmill(){
   });
 }
 
-// ── MUSIC MODAL ───────────────────────────────────────────────
+// MUSIC MODAL -----------------------------------------------
 function openMusicModal(){resetMusicModal();openModal('mu_overlay');}
 function resetMusicModal(){
   musicMode='from';musicFrom='';musicTo='';
@@ -739,7 +739,7 @@ function saveMusic(){
   appendEvt(time,'Music',detail,'','',()=>{isSavingMusic=false;});
 }
 
-// ── INIT ──────────────────────────────────────────────────────
+// INIT ------------------------------------------------------
 window.addEventListener('load',()=>{
   buildDateSelector();
   window._water=0;
@@ -769,7 +769,7 @@ function buildDateSelector(){
 }
 function onDateChange(val){curDate=val;loadDay(val);}
 
-// ── API ───────────────────────────────────────────────────────
+// API -------------------------------------------------------
 function apicall(params,cb){
   fetch(API+'?'+new URLSearchParams(params).toString(),{redirect:'follow'})
     .then(r=>r.json()).then(cb).catch(()=>snack('⚠️ Connection error'));
@@ -787,7 +787,7 @@ function appendEvt(time,cat,detail,numVal,moodScore,cb){
   });
 }
 
-// ── LOAD DAY ──────────────────────────────────────────────────
+// LOAD DAY --------------------------------------------------
 function loadDay(dateStr){
   apicall({action:'getRow',date:dateStr},res=>{if(res.success) populateFields(JSON.parse(res.data));});
   apicall({action:'getEvents',date:dateStr},res=>{if(res.success) populateEvents(JSON.parse(res.data));});
@@ -834,7 +834,7 @@ function populateFields(d){
   const ww=d['Water after waking (glasses)'];
   if(ww){document.querySelectorAll('#grp_ww .chip').forEach(c=>{if(c.textContent.trim()===String(ww)) c.classList.add('on');});}
 
-  // Morning routine Y/N — stored in Morning routine done column
+  // Morning routine Y/N - stored in Morning routine done column
   const mr=d['Morning routine done']||'';
   // Also check individual columns if they exist
   restoreYNfromCol('yn_lw', d['Lukewarm water']||( mr.includes('Lukewarm')?'Yes':''));
@@ -867,7 +867,7 @@ function restoreYNfromCol(prefix,val){
   y.classList.remove('on');n.classList.remove('on');
   if(val==='Yes'||val===true||val==='TRUE') y.classList.add('on');
   else if(val==='No'||val===false||val==='FALSE') n.classList.add('on');
-  // If empty — neither highlighted
+  // If empty - neither highlighted
 }
 
 function populateMealFromRow(d){
@@ -960,7 +960,7 @@ function checkMandatory(){
   Object.entries(checks).forEach(([id,fn])=>{const el=document.getElementById(id);if(el) el.classList.toggle('missing',rel&&!fn());});
 }
 
-// ── Y/N ───────────────────────────────────────────────────────
+// Y/N -------------------------------------------------------
 function selWW(val){
   document.getElementById('yn_ww_1').classList.toggle('on', val===1);
   document.getElementById('yn_ww_2').classList.toggle('on', val===2);
@@ -985,7 +985,7 @@ function getMorningRoutineSummary(){
   return items.join(', ');
 }
 
-// ── SAVES ─────────────────────────────────────────────────────
+// SAVES -----------------------------------------------------
 function saveMeal(){
   const time=tpV['meal'];const desc=document.getElementById('f_meal_desc').value;
   if(!time&&!desc){snack('Please enter time or description');return;}
@@ -1048,7 +1048,7 @@ function savePrivate(){
   appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{document.getElementById('f_priv_val').value='';closeModal('test_overlay');});
 }
 
-// ── UI HELPERS ────────────────────────────────────────────────
+// UI HELPERS ------------------------------------------------
 function tog(id){const b=document.getElementById('body-'+id),c=document.getElementById('chev-'+id);const open=!b.classList.contains('hide');b.classList.toggle('hide',open);c.classList.toggle('open',!open);}
 function togChip(el,gid,field){el.classList.toggle('on');if(field) autoSave(field,getChecked(gid).join(', '));}
 function selChip(el,gid){document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
@@ -1104,7 +1104,7 @@ function loadHistory(){
       const hasData=withData.has(d);
       const isMissing=(d===today||d===tmrStr)&&d>='2026-06-14';
       const cls='histcard'+(isMissing?' red':hasData?' hasdata':'');
-      return '<div class="'+cls+'" onclick="openDate(''+d+'')">' +
+      return '<div class="'+cls+'" onclick="openDate(\''+d+'\')">' +
         '<div><div class="histdate">'+lbl+(isMissing?' ⚠️':'')+'</div>' +
         '<div class="histsub">'+(hasData?'Data logged':'No data yet')+'</div></div>' +
         '<div class="histarrow">›</div></div>';
