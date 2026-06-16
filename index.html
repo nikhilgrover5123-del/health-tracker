@@ -269,7 +269,36 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip" onclick="selChip(this,'grp_priv')">R</div>
       </div>
     </div>
-    <div class="field"><label>Value</label><input type="number" id="f_priv_val" step="0.5"></div>
+    <div class="field"><label>Hour</label>
+      <div class="chips" id="grp_priv_hour">
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">1</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">2</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">3</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">4</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">5</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">6</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">7</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">8</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">9</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">10</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">11</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_hour')">12</div>
+      </div>
+    </div>
+    <div class="field"><label>AM / PM</label>
+      <div class="chips" id="grp_priv_ampm">
+        <div class="chip on" onclick="selChip(this,'grp_priv_ampm')">AM</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_ampm')">PM</div>
+      </div>
+    </div>
+    <div class="field"><label>Value</label>
+      <div class="chips" id="grp_priv_val">
+        <div class="chip" onclick="selChip(this,'grp_priv_val')">1</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_val')">2</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_val')">3</div>
+        <div class="chip" onclick="selChip(this,'grp_priv_val')">4</div>
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('test_overlay')">Cancel</button>
       <button class="btn-ok" onclick="savePrivate()">Save</button>
@@ -302,14 +331,20 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
 <div class="card">
   <div class="cardhead" onclick="tog('sleep')"><div class="cardtitle"><span class="dot" style="background:#3498DB"></span>Sleep</div><div class="chev open" id="chev-sleep">▾</div></div>
   <div class="cardbody" id="body-sleep">
-    <div class="g2">
-      <div class="field" id="fw_wake">
-        <label>Wake up time <span class="req">*</span></label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end">
+      <div class="field" id="fw_wake" style="margin-bottom:0">
+        <label>Wake up <span class="req">*</span></label>
         <div class="timefield" onclick="openTP('wake','Wake up time',false,'06:00','AM')"><span id="tfv_wake">–</span><span>🕐</span></div>
       </div>
-      <div class="field"><label>Slept last night</label><div class="disabled-field" id="slept_last_display">–</div></div>
+      <div class="field" style="margin-bottom:0">
+        <label>Slept last night</label>
+        <div class="disabled-field" id="slept_last_display">–</div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Hours of sleep</label>
+        <div class="sleep-display" id="sleep_hrs_display" style="font-size:22px;padding:10px 0">–</div>
+      </div>
     </div>
-    <div class="field"><label>Hours of sleep</label><div class="sleep-display" id="sleep_hrs_display">–</div></div>
   </div>
 </div>
 
@@ -320,8 +355,8 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
     <div class="yn-row">
       <span class="yn-label">💧 Glasses of water on waking</span>
       <div class="yn-btns">
-        <div class="yn-btn" id="yn_ww_1" onclick="selWW(1)" style="min-width:34px">1</div>
-        <div class="yn-btn" id="yn_ww_2" onclick="selWW(2)" style="min-width:34px">2</div>
+        <div class="yn-btn y" id="yn_ww_1" onclick="selWW(1)" style="min-width:34px">1</div>
+        <div class="yn-btn y" id="yn_ww_2" onclick="selWW(2)" style="min-width:34px">2</div>
       </div>
     </div>
     <div class="yn-row"><span class="yn-label">💧 Lukewarm water</span><div class="yn-btns"><div class="yn-btn y" id="yn_lw_y" onclick="selYNid('yn_lw','Y');autoSave('Lukewarm water','Yes')">Y</div><div class="yn-btn n" id="yn_lw_n" onclick="selYNid('yn_lw','N');autoSave('Lukewarm water','No')">N</div></div></div>
@@ -336,12 +371,12 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
 <div class="card">
   <div class="cardhead" onclick="tog('water')"><div class="cardtitle"><span class="dot" style="background:#3498DB"></span>Water</div><div class="chev open" id="chev-water">▾</div></div>
   <div class="cardbody" id="body-water">
-    <div class="field" id="fw_water">
-      <label>Total today (litres) <span class="req">*</span> — target 2.5L</label>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
-        <button onclick="adjWater(-0.25)" style="width:48px;height:48px;border:1.5px solid var(--border);border-radius:50%;font-size:24px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">−</button>
-        <div style="flex:1;text-align:center;font-size:28px;font-weight:700;color:var(--primary)" id="water_display">0L</div>
-        <button onclick="adjWater(0.25)" style="width:48px;height:48px;border:1.5px solid var(--border);border-radius:50%;font-size:24px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">+</button>
+    <div class="field" id="fw_water" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <label style="flex:1;margin-bottom:0">Total today <span class="req">*</span> — target 2.5L</label>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <button onclick="adjWater(-0.25)" style="width:40px;height:40px;border:1.5px solid var(--border);border-radius:50%;font-size:20px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center">−</button>
+        <div style="font-size:22px;font-weight:700;color:var(--primary);min-width:52px;text-align:center" id="water_display">0L</div>
+        <button onclick="adjWater(0.25)" style="width:40px;height:40px;border:1.5px solid var(--border);border-radius:50%;font-size:20px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center">+</button>
       </div>
     </div>
     <div class="wbar-bg"><div class="wbar-fill" id="wbar"></div></div>
@@ -369,13 +404,15 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip" onclick="selMealType(this,'Dinner')">🍽️ Dinner</div>
       </div>
     </div>
-    <div class="g2">
-      <div class="field" id="fw_meal_time"><label>Time <span class="req">*</span></label><div class="timefield" onclick="openMealTP()"><span id="tfv_meal">–</span><span>🕐</span></div></div>
-      <div class="field" style="display:flex;align-items:flex-end">
-        <div style="width:100%">
-          <div style="font-size:13px;color:var(--text2);margin-bottom:4px">🐢 Ate slowly</div>
-          <div class="yn-btns"><div class="yn-btn y" id="yn_ats_y" onclick="selYNid('yn_ats','Y');autoSave('Breakfast ate slowly','Yes')">Y</div><div class="yn-btn n" id="yn_ats_n" onclick="selYNid('yn_ats','N');autoSave('Breakfast ate slowly','No')">N</div></div>
-        </div>
+    <div class="field" id="fw_meal_time" style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="flex:1;min-width:0">
+        <label>Time <span class="req">*</span></label>
+        <div class="timefield" onclick="openMealTP()"><span id="tfv_meal">–</span><span>🕐</span></div>
+      </div>
+      <div style="flex-shrink:0;padding-top:20px;display:flex;align-items:center;gap:6px">
+        <span style="font-size:13px;color:var(--text2);white-space:nowrap">🐢 Ate slowly</span>
+        <div class="yn-btn y" id="yn_ats_y" onclick="selYNid('yn_ats','Y');autoSave('Breakfast ate slowly','Yes')">Y</div>
+        <div class="yn-btn n" id="yn_ats_n" onclick="selYNid('yn_ats','N');autoSave('Breakfast ate slowly','No')">N</div>
       </div>
     </div>
     <div class="field"><label>Description</label><textarea id="f_meal_desc" rows="2"></textarea></div>
@@ -424,7 +461,6 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip" onclick="selFdCat(this,'Junk/Sugar')">🍭 Junk/Sugar</div>
         <div class="chip" onclick="selFdCat(this,'Alcohol')">🍺 Alcohol</div>
         <div class="chip" onclick="selFdCat(this,'Coffee')">☕ Coffee</div>
-        <div class="chip" onclick="selFdCat(this,'Thumbs Up')">👍 Thumbs Up</div>
       </div>
     </div>
     <div class="g2">
@@ -432,14 +468,11 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
       <div class="field"><label>Detail</label><input type="text" id="f_fd_detail"></div>
     </div>
     <div class="cond" id="cond_coffee">
-      <div class="g2">
-        <div class="field"><label>Count</label><input type="number" id="f_coffee_n" min="1" max="10"></div>
-        <div class="field"><label>Type</label>
-          <div class="chips" id="grp_coffee_type">
-            <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Black</div>
-            <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Milk</div>
-            <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Sugar</div>
-          </div>
+      <div class="field"><label>Type</label>
+        <div class="chips" id="grp_coffee_type">
+          <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Black</div>
+          <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Milk</div>
+          <div class="chip" onclick="togChip(this,'grp_coffee_type',null)">Sugar</div>
         </div>
       </div>
     </div>
@@ -455,11 +488,11 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
     <div class="field">
       <div class="chips" id="grp_hm_cat">
         <div class="chip on" onclick="selHmCat(this,'Mood')">😊 Mood</div>
-        <div class="chip" onclick="selHmCat(this,'Stress')">😤 Stress</div>
         <div class="chip" onclick="selHmCat(this,'Energy')">⚡ Energy</div>
-        <div class="chip" onclick="selHmCat(this,'Exercise')">🏋️ Exercise</div>
+        <div class="chip" onclick="selHmCat(this,'Stress')">😤 Stress</div>
         <div class="chip" onclick="selHmCat(this,'Headache')">🤕 Headache</div>
         <div class="chip" onclick="selHmCat(this,'Note')">📝 Note</div>
+        <div class="chip" onclick="selHmCat(this,'Exercise')">🏋️ Exercise</div>
       </div>
     </div>
     <div class="field"><label>Time</label><div class="timefield" onclick="openTP('hm','Time',true,nowTime(),nowAMPM())"><span id="tfv_hm">–</span><span>🕐</span></div></div>
@@ -903,11 +936,11 @@ function populateEvents(events){
 
   const tmEvts=events.filter(e=>e.Category==='Exercise'&&String(e.Detail||'').includes('km'));
   renderEntries('treadmill_entries',tmEvts);
-  renderEntries('fd_entries',bycat(['Mid morning snack','Post lunch snack','Evening snack','After dinner snack','Coffee','Junk/Sugar','Alcohol','Thumbs Up','From outside']));
+  renderEntries('fd_entries',bycat(['Mid morning snack','Post lunch snack','Evening snack','After dinner snack','Coffee','Junk/Sugar','Alcohol','From outside']));
   renderEntries('hm_entries',bycat(['Mood','Stress','Energy','Headache','Note']).concat(events.filter(e=>e.Category==='Exercise'&&!String(e.Detail||'').includes('km'))));
   renderEntries('music_entries',bycat(['Music']));
   renderEntries('reflect_entries',bycat(['Reflection']));
-  renderEntries('private_entries',events.filter(e=>e.Category&&(e.Category.startsWith('Test-')||e.Category.startsWith('Private-'))));
+  renderEntries('private_entries',events.filter(e=>e.Category&&(e.Category.startsWith('Test-')||e.Category.startsWith('Private-'))).map(e=>({...e,Category:e.Category.replace('Test-','').replace('Private-','')})));
   calcScore(events);
 }
 
@@ -1045,7 +1078,7 @@ function saveMeal(){
 
 function saveFD(){
   const time=tpV['fd']||nowTime();let detail=document.getElementById('f_fd_detail').value;
-  if(fdCat==='Coffee'){const n=document.getElementById('f_coffee_n').value||'1';const types=getChecked('grp_coffee_type');detail=n+' coffee'+(types.length?'('+types.join('+')+')':'')+(detail?' · '+detail:'');}
+  if(fdCat==='Coffee'){const types=getChecked('grp_coffee_type');detail='1 coffee'+(types.length?'('+types.join('+')+')':'')+(detail?' · '+detail:'');}
   appendEvt(time,fdCat,detail,'','',()=>{document.getElementById('f_fd_detail').value='';});
 }
 
@@ -1071,9 +1104,10 @@ function savePrivate(){
   const btn=document.querySelector('#test_overlay .btn-ok');
   if(btn&&btn.disabled) return;
   if(btn) btn.disabled=true;
-  const cat=getSel('grp_priv')||'M';const val=document.getElementById('f_priv_val').value;
+  const cat=getSel('grp_priv')||'M';const hour=getSel('grp_priv_hour')||'';const ampm=getSel('grp_priv_ampm')||'AM';const val=getSel('grp_priv_val')||'';
+  const time=hour?(hour.padStart(2,'0').replace(/^(\d+)$/,(h)=>{const h24=ampm==='PM'&&h!=='12'?parseInt(h)+12:ampm==='AM'&&h==='12'?0:parseInt(h);return(h24<10?'0':'')+h24+':00';})+''):'';  
   closeModal('test_overlay');
-  appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{
+  appendEvt(time||nowTime(),'Test-'+cat,'',val,'',()=>{
     document.getElementById('f_priv_val').value='';
     if(btn) btn.disabled=false;
   });
