@@ -305,7 +305,7 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
     <div class="g2">
       <div class="field" id="fw_wake">
         <label>Wake up time <span class="req">*</span></label>
-        <div class="timefield" onclick="openTP('wake','Wake up time',false,'06:00','AM')"><span id="tfv_wake">06:00 AM</span><span>🕐</span></div>
+        <div class="timefield" onclick="openTP('wake','Wake up time',false,'06:00','AM')"><span id="tfv_wake">–</span><span>🕐</span></div>
       </div>
       <div class="field"><label>Slept last night</label><div class="disabled-field" id="slept_last_display">–</div></div>
     </div>
@@ -338,7 +338,11 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
   <div class="cardbody" id="body-water">
     <div class="field" id="fw_water">
       <label>Total today (litres) <span class="req">*</span> — target 2.5L</label>
-      <div class="water-chips" id="water_picker"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+        <button onclick="adjWater(-0.25)" style="width:48px;height:48px;border:1.5px solid var(--border);border-radius:50%;font-size:24px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">−</button>
+        <div style="flex:1;text-align:center;font-size:28px;font-weight:700;color:var(--primary)" id="water_display">0L</div>
+        <button onclick="adjWater(0.25)" style="width:48px;height:48px;border:1.5px solid var(--border);border-radius:50%;font-size:24px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">+</button>
+      </div>
     </div>
     <div class="wbar-bg"><div class="wbar-fill" id="wbar"></div></div>
     <div class="wbar-lbl" id="wbar_lbl">0 / 2.5L</div>
@@ -366,7 +370,7 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
       </div>
     </div>
     <div class="g2">
-      <div class="field" id="fw_meal_time"><label>Time <span class="req">*</span></label><div class="timefield" onclick="openMealTP()"><span id="tfv_meal">08:30 AM</span><span>🕐</span></div></div>
+      <div class="field" id="fw_meal_time"><label>Time <span class="req">*</span></label><div class="timefield" onclick="openMealTP()"><span id="tfv_meal">–</span><span>🕐</span></div></div>
       <div class="field" style="display:flex;align-items:flex-end">
         <div style="width:100%">
           <div style="font-size:13px;color:var(--text2);margin-bottom:4px">🐢 Ate slowly</div>
@@ -416,15 +420,15 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip on" onclick="selFdCat(this,'Mid morning snack')">Mid morning</div>
         <div class="chip" onclick="selFdCat(this,'Post lunch snack')">Post lunch</div>
         <div class="chip" onclick="selFdCat(this,'Evening snack')">Evening</div>
-        <div class="chip" onclick="selFdCat(this,'Coffee')">☕ Coffee</div>
         <div class="chip" onclick="selFdCat(this,'After dinner snack')">After dinner</div>
         <div class="chip" onclick="selFdCat(this,'Junk/Sugar')">🍭 Junk/Sugar</div>
         <div class="chip" onclick="selFdCat(this,'Alcohol')">🍺 Alcohol</div>
+        <div class="chip" onclick="selFdCat(this,'Coffee')">☕ Coffee</div>
         <div class="chip" onclick="selFdCat(this,'Thumbs Up')">👍 Thumbs Up</div>
       </div>
     </div>
     <div class="g2">
-      <div class="field"><label>Time</label><div class="timefield" onclick="openFdTP()"><span id="tfv_fd">11:00 AM</span><span>🕐</span></div></div>
+      <div class="field"><label>Time</label><div class="timefield" onclick="openFdTP()"><span id="tfv_fd">–</span><span>🕐</span></div></div>
       <div class="field"><label>Detail</label><input type="text" id="f_fd_detail"></div>
     </div>
     <div class="cond" id="cond_coffee">
@@ -538,7 +542,7 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
     <div class="divider"></div>
     <div class="field" id="fw_slept">
       <label>Slept at <span class="req">*</span></label>
-      <div class="timefield" onclick="openTP('slept','Slept at',false,'23:30','PM')"><span id="tfv_slept">11:30 PM</span><span>🕐</span></div>
+      <div class="timefield" onclick="openTP('slept','Slept at',false,'23:30','PM')"><span id="tfv_slept">–</span><span>🕐</span></div>
     </div>
     <div class="divider"></div>
     <div class="sec-label">Reflections</div>
@@ -729,13 +733,14 @@ function selMusicMood(el,emoji,label){
   document.getElementById('mu_display').textContent=(musicFrom||'–')+' → '+(musicTo||'–');
 }
 function saveMusic(){
-  if(isSavingMusic) return;
-  isSavingMusic=true;
+  const btn=document.querySelector('#mu_overlay .btn-ok');
+  if(btn&&btn.disabled) return;
+  if(btn) btn.disabled=true;
   const time=tpV['mu']||nowTime();
   const what=document.getElementById('mu_what').value;
   const detail=(musicFrom?'Before: '+musicFrom:'')+(musicTo?' → After: '+musicTo:'')+(what?' · '+what:'');
   closeModal('mu_overlay');
-  appendEvt(time,'Music',detail,'','',()=>{isSavingMusic=false;});
+  appendEvt(time,'Music',detail,'','',()=>{document.getElementById('mu_what').value='';if(btn)btn.disabled=false;});
 }
 
 // INIT ------------------------------------------------------
@@ -743,9 +748,7 @@ window.addEventListener('load',()=>{
   buildDateSelector();
   window._water=0;
   buildWaterPicker();
-  tpV['wake']='06:00';tpV['slept']='23:30';tpV['meal']='08:30';tpV['fd']='11:00';
-  document.getElementById('tfv_wake').textContent='06:00 AM';
-  document.getElementById('tfv_slept').textContent='11:30 PM';
+  // No default times - fields start empty, only populate from saved data
   if(new Date().getDay()!==0){document.getElementById('weekly_note').textContent='Log weight & waistline on Sundays';document.getElementById('weekly_card').style.opacity='0.5';}
   loadDay(curDate);
 });
@@ -788,6 +791,16 @@ function appendEvt(time,cat,detail,numVal,moodScore,cb){
 
 // LOAD DAY --------------------------------------------------
 function loadDay(dateStr){
+  // Clear all Y/N state before loading new date
+  document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.chip').forEach(c=>{if(!c.closest('#grp_meal_type')&&!c.closest('#grp_hm_cat')&&!c.closest('#grp_fd_cat')) c.classList.remove('on');});
+  // Reset water
+  window._water=0;const wdel=document.getElementById('water_display');if(wdel)wdel.textContent='0L';updateWbar(0);
+  // Reset time displays
+  ['wake','slept','treadmill','meal','fd','hm','music','priv','tm','mu','device'].forEach(id=>{
+    const el=document.getElementById('tfv_'+id);if(el) el.textContent='–';
+    delete tpV[id];
+  });
   apicall({action:'getRow',date:dateStr},res=>{if(res.success) populateFields(JSON.parse(res.data));});
   apicall({action:'getEvents',date:dateStr},res=>{if(res.success) populateEvents(JSON.parse(res.data));});
   // Yesterday slept at
@@ -826,7 +839,7 @@ function populateFields(d){
   setTP('device','Last device use','tfv_device');
   setF('f_weight',d['Weight (kg)']);setF('f_waist',d['Waistline (cm)']);
   const wv=parseFloat(d['Water total (litres)']||0);
-  if(wv>0){window._water=wv;buildWaterPicker();updateWbar(wv);}
+  if(wv>0){window._water=wv;const wd=document.getElementById('water_display');if(wd)wd.textContent=wv+'L';updateWbar(wv);}
   if(d['Hours of sleep']) updateSleepDisplay(d['Hours of sleep']);
 
   // Water on waking
@@ -960,12 +973,21 @@ function checkMandatory(){
 }
 
 // Y/N -------------------------------------------------------
+function adjWater(delta){
+  window._water=Math.max(0,Math.round(((window._water||0)+delta)*100)/100);
+  const el=document.getElementById('water_display');
+  if(el) el.textContent=window._water+'L';
+  updateWbar(window._water);
+  autoSave('Water total (litres)',window._water);
+}
+function buildWaterPicker(){} // no-op kept for compatibility
+function pickWater(v){}
 function selWW(val){
   val=parseInt(val);
   const e1=document.getElementById('yn_ww_1');
   const e2=document.getElementById('yn_ww_2');
-  if(e1) e1.classList.toggle('on', val===1);
-  if(e2) e2.classList.toggle('on', val===2);
+  if(e1){e1.classList.remove('on');if(val===1)e1.classList.add('on');}
+  if(e2){e2.classList.remove('on');if(val===2)e2.classList.add('on');}
   autoSave('Water after waking (glasses)', val);
 }
 
@@ -1045,12 +1067,16 @@ function saveReflect(){
   appendEvt(nowTime(),'Reflection',cat+': '+detail,'','',()=>{document.getElementById('f_reflect_detail').value='';});
 }
 
-let isSavingPrivate=false;
 function savePrivate(){
-  if(isSavingPrivate) return;
-  isSavingPrivate=true;
+  const btn=document.querySelector('#test_overlay .btn-ok');
+  if(btn&&btn.disabled) return;
+  if(btn) btn.disabled=true;
   const cat=getSel('grp_priv')||'M';const val=document.getElementById('f_priv_val').value;
-  appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{document.getElementById('f_priv_val').value='';closeModal('test_overlay');isSavingPrivate=false;});
+  closeModal('test_overlay');
+  appendEvt(nowTime(),'Test-'+cat,'',val,'',()=>{
+    document.getElementById('f_priv_val').value='';
+    if(btn) btn.disabled=false;
+  });
 }
 
 // UI HELPERS ------------------------------------------------
