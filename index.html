@@ -291,14 +291,7 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
         <div class="chip" onclick="selChip(this,'grp_priv_ampm')">PM</div>
       </div>
     </div>
-    <div class="field"><label>Value</label>
-      <div class="chips" id="grp_priv_val">
-        <div class="chip" onclick="selChip(this,'grp_priv_val')">1</div>
-        <div class="chip" onclick="selChip(this,'grp_priv_val')">2</div>
-        <div class="chip" onclick="selChip(this,'grp_priv_val')">3</div>
-        <div class="chip" onclick="selChip(this,'grp_priv_val')">4</div>
-      </div>
-    </div>
+
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('test_overlay')">Cancel</button>
       <button class="btn-ok" onclick="savePrivate()">Save</button>
@@ -1104,10 +1097,13 @@ function savePrivate(){
   const btn=document.querySelector('#test_overlay .btn-ok');
   if(btn&&btn.disabled) return;
   if(btn) btn.disabled=true;
-  const cat=getSel('grp_priv')||'M';const hour=getSel('grp_priv_hour')||'';const ampm=getSel('grp_priv_ampm')||'AM';const val=getSel('grp_priv_val')||'';
-  const time=hour?(hour.padStart(2,'0').replace(/^(\d+)$/,(h)=>{const h24=ampm==='PM'&&h!=='12'?parseInt(h)+12:ampm==='AM'&&h==='12'?0:parseInt(h);return(h24<10?'0':'')+h24+':00';})+''):'';  
+  const cat=getSel('grp_priv')||'M';
+  const hour=getSel('grp_priv_hour')||'';
+  const ampm=getSel('grp_priv_ampm')||'AM';
+  let time=nowTime();
+  if(hour){const h=parseInt(hour);const h24=ampm==='PM'&&h!==12?h+12:ampm==='AM'&&h===12?0:h;time=(h24<10?'0':'')+h24+':00';}
   closeModal('test_overlay');
-  appendEvt(time||nowTime(),'Test-'+cat,'',val,'',()=>{
+  appendEvt(time,'Test-'+cat,'','','',()=>{
     document.getElementById('f_priv_val').value='';
     if(btn) btn.disabled=false;
   });
