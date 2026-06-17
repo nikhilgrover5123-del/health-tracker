@@ -780,12 +780,12 @@ window.addEventListener('load',()=>{
   if(new Date().getDay()!==0){document.getElementById('weekly_note').textContent='Log weight & waistline on Sundays';document.getElementById('weekly_card').style.opacity='0.5';}
   loadDay(curDate);
 });
-
 function todayStr(){
   return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Dubai', year: 'numeric', month: '2-digit', day: '2-digit'
   }).format(new Date());
 }
+function buildDateSelector(){
   const sel=document.getElementById('dateSelect');
   const start=new Date(START+'T12:00:00'),today=new Date();
   const days=Math.ceil((today-start)/86400000);
