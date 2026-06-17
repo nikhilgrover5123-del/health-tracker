@@ -620,8 +620,14 @@ let tpFieldSave=null; // field name to autoSave on OK
 let isSavingMusic=false;
 
 // TIME PICKER -----------------------------------------------
-function nowTime(){const n=new Date();const u=new Date(n.getTime()+((240+n.getTimezoneOffset())*60000));return(u.getHours()<10?'0':'')+u.getHours()+':'+(u.getMinutes()<10?'0':'')+u.getMinutes();}
-function nowAMPM(){const n=new Date();const u=new Date(n.getTime()+((240+n.getTimezoneOffset())*60000));return u.getHours()<12?'AM':'PM';}
+function nowTime(){
+  const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dubai',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+  return p.find(x=>x.type==='hour').value+':'+p.find(x=>x.type==='minute').value;
+}
+function nowAMPM(){
+  const h=parseInt(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dubai',hour:'2-digit',hour12:false}).format(new Date()),10);
+  return h<12?'AM':'PM';
+}
 function fmt12(h,m,am){return h+':'+(m<10?'0':'')+m+' '+(am?'AM':'PM');}
 function fmt24(h,m,am){let h24=am?h%12:h%12+12;return(h24<10?'0':'')+h24+':'+(m<10?'0':'')+m;}
 
