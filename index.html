@@ -559,6 +559,8 @@ input,textarea,select,button{font-size:var(--F)!important;font-family:inherit;to
     <div class="yn-row"><span class="yn-label">💡 Lights dimmed</span><div class="yn-btns"><div class="yn-btn y" id="yn_lights_y" onclick="selYNid('yn_lights','Y');autoSave('Lights dimmed','Yes')">Y</div><div class="yn-btn n" id="yn_lights_n" onclick="selYNid('yn_lights','N');autoSave('Lights dimmed','No')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🪥 Brush at night</span><div class="yn-btns"><div class="yn-btn y" id="yn_brush_y" onclick="selYNid('yn_brush','Y');autoSave('Brush at night','Yes')">Y</div><div class="yn-btn n" id="yn_brush_n" onclick="selYNid('yn_brush','N');autoSave('Brush at night','No')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🧴 Face wash</span><div class="yn-btns"><div class="yn-btn y" id="yn_fw_y" onclick="selYNid('yn_fw','Y');autoSave('Face wash','Yes')">Y</div><div class="yn-btn n" id="yn_fw_n" onclick="selYNid('yn_fw','N');autoSave('Face wash','No')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">📖 Read today</span><div class="yn-btns"><div class="yn-btn y" id="yn_read_y" onclick="selYNid('yn_read','Y');autoSave('Did You Read Today','Yes')">Y</div><div class="yn-btn n" id="yn_read_n" onclick="selYNid('yn_read','N');autoSave('Did You Read Today','No')">N</div></div></div>
+    <div class="yn-row"><span class="yn-label">🎧 Audiobook</span><div class="yn-btns"><div class="yn-btn y" id="yn_audio_y" onclick="selYNid('yn_audio','Y');autoSave('Head audio book','Yes')">Y</div><div class="yn-btn n" id="yn_audio_n" onclick="selYNid('yn_audio','N');autoSave('Head audio book','No')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🪜 Took stairs</span><div class="yn-btns"><div class="yn-btn y" id="yn_stairs_y" onclick="selYNid('yn_stairs','Y');autoSave('Took stairs','Yes')">Y</div><div class="yn-btn n" id="yn_stairs_n" onclick="selYNid('yn_stairs','N');autoSave('Took stairs','No')">N</div></div></div>
     <div class="yn-row"><span class="yn-label">🍽️ Food after 7pm</span><div class="yn-btns"><div class="yn-btn y" id="yn_f7_y" onclick="selYNid('yn_f7','Y');autoSave('Food after 7pm','Yes')">Y</div><div class="yn-btn n" id="yn_f7_n" onclick="selYNid('yn_f7','N');autoSave('Food after 7pm','No')">N</div></div></div>
     <div class="field" style="margin-top:4px">
@@ -872,23 +874,20 @@ function populateFields(d){
   const ww=d['Water after waking (glasses)'];
   if(ww){document.querySelectorAll('#grp_ww .chip').forEach(c=>{if(c.textContent.trim()===String(ww)) c.classList.add('on');});}
 
-  // Morning routine Y/N - stored in Morning routine done column
-  const mr=d['Morning routine done']||'';
-  // Also check individual columns if they exist
-  restoreYNfromCol('yn_lw', d['Lukewarm water']||( mr.includes('Lukewarm')?'Yes':''));
-  // Restore water waking
+  restoreYNfromCol('yn_lw', d['Lukewarm water']||'');
   const ww2=d['Water after waking (glasses)'];
   if(ww2==1||ww2=='1'){document.getElementById('yn_ww_1').classList.add('on');}
   else if(ww2==2||ww2=='2'){document.getElementById('yn_ww_2').classList.add('on');}
-  restoreYNfromCol('yn_ccf', d['CCF tea']||( mr.includes('CCF')?'Yes':''));
-  restoreYNfromCol('yn_aw', d['Almonds+Walnuts']||( mr.includes('Almonds')?'Yes':''));
-  restoreYNfromCol('yn_7w', d['7min walk']||( mr.includes('7min')?'Yes':''));
+  restoreYNfromCol('yn_ccf', d['CCF tea']||'');
+  restoreYNfromCol('yn_aw', d['Almonds+Walnuts']||'');
+  restoreYNfromCol('yn_7w', d['7min walk']||'');
 
   // Y/N fields with direct columns
   const ynDirect={
     yn_shaved:'Shaved',yn_dressed:'Dress up well',yn_sun:'Sunlight',
     yn_hk:'Housekeeping',yn_grat:'Gratitude',yn_brush:'Brush at night',
     yn_fw:'Face wash',yn_f7:'Food after 7pm',yn_cham:'Chamomile tea',
+    yn_read:'Did You Read Today',yn_audio:'Head audio book',
     yn_pista:'Pista',yn_lights:'Lights dimmed'
   };
   Object.entries(ynDirect).forEach(([prefix,col])=>restoreYNfromCol(prefix,d[col]||''));
@@ -1026,14 +1025,7 @@ function selYNid(prefix,val){
   if(val==='N'&&n) n.classList.add('on');
 }
 
-function getMorningRoutineSummary(){
-  const items=[];
-  if(document.getElementById('yn_lw_y').classList.contains('on')) items.push('Lukewarm water');
-  if(document.getElementById('yn_ccf_y').classList.contains('on')) items.push('CCF tea');
-  if(document.getElementById('yn_aw_y').classList.contains('on')) items.push('Almonds+Walnuts');
-  if(document.getElementById('yn_7w_y').classList.contains('on')) items.push('7min walk');
-  return items.join(', ');
-}
+
 
 // SAVES -----------------------------------------------------
 function saveMeal(){
@@ -1064,7 +1056,7 @@ function saveMeal(){
     saves['Dinner ate slowly']=ateS?'Yes':'No';saves['Dinner from outside']=isOS?'Yes':'No';
   }
   // Save morning routine summary too
-  autoSave('Morning routine done',getMorningRoutineSummary());
+
   Object.entries(saves).forEach(([f,v])=>apicall({action:'saveField',date:curDate,field:f,value:v},()=>{}));
   appendEvt(time,mealType,detail,'','',()=>{document.getElementById('f_meal_desc').value='';});
 }
